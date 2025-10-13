@@ -3,12 +3,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import type { User } from '@supabase/supabase-js';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { CompactLanguageToggle } from '@/components/LanguageToggle';
 
 const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -30,13 +33,13 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { href: '/', label: 'Home', icon: '🏠' },
-    { href: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { href: '/soil-analysis', label: 'Soil Analysis', icon: '🌱' },
-    { href: '/disease-scanner', label: 'Disease Scanner', icon: '🔍' },
-    { href: '/ai-assistant', label: 'AI Assistant', icon: '🤖' },
-    { href: '/weather-analytics', label: 'Weather', icon: '🌤️' },
-    { href: '/market', label: 'Market', icon: '📈' },
+    { href: '/', label: t('nav.home'), icon: '🏠' },
+    { href: '/dashboard', label: t('nav.dashboard'), icon: '📊' },
+    { href: '/soil-analysis', label: t('nav.soil'), icon: '🌱' },
+    { href: '/disease-scanner', label: t('nav.disease'), icon: '🔍' },
+    { href: '/ai-assistant', label: t('nav.ai'), icon: '🤖' },
+    { href: '/weather-analytics', label: t('nav.weather'), icon: '🌤️' },
+    { href: '/market', label: t('nav.market'), icon: '📈' },
   ];
 
   return (
@@ -70,23 +73,24 @@ const Navbar = () => {
           </div>
 
           {/* Auth Section */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-3">
+            <CompactLanguageToggle />
             {user ? (
               <div className="flex items-center space-x-3">
                 <Link to="/profile">
                   <Button variant="ghost" size="sm" className="flex items-center space-x-2">
                     <span>👤</span>
-                    <span>Profile</span>
+                    <span>{t('nav.profile')}</span>
                   </Button>
                 </Link>
                 <Button onClick={handleSignOut} variant="outline" size="sm">
-                  Sign Out
+                  {t('nav.signout')}
                 </Button>
               </div>
             ) : (
               <Link to="/auth">
                 <Button className="bg-cta hover:bg-cta/90">
-                  Get Started
+                  {t('nav.getStarted')}
                 </Button>
               </Link>
             )}
@@ -123,23 +127,26 @@ const Navbar = () => {
                 </Link>
               ))}
               
-              <div className="pt-4 border-t border-earth mt-4">
+              <div className="pt-4 border-t border-earth mt-4 space-y-3">
+                <div className="flex justify-center">
+                  <CompactLanguageToggle />
+                </div>
                 {user ? (
                   <div className="space-y-2">
                     <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start">
                         <span className="mr-3">👤</span>
-                        Profile
+                        {t('nav.profile')}
                       </Button>
                     </Link>
                     <Button onClick={handleSignOut} variant="outline" className="w-full">
-                      Sign Out
+                      {t('nav.signout')}
                     </Button>
                   </div>
                 ) : (
                   <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
                     <Button className="w-full bg-cta hover:bg-cta/90">
-                      Get Started
+                      {t('nav.getStarted')}
                     </Button>
                   </Link>
                 )}

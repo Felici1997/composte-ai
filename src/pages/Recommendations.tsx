@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Droplets, Sun, TrendingUp, AlertTriangle, CheckCircle, MapPin, Thermometer } from 'lucide-react';
+import { VisualSoilSelector, VisualSeasonSelector, VisualCropSelector, VisualWaterSelector } from '@/components/VisualInputs';
+import { LocationSelector } from '@/components/LocationSelector';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import type { User } from '@supabase/supabase-js';
@@ -100,12 +102,45 @@ const Recommendations = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [showRealtimeRecommendations, setShowRealtimeRecommendations] = useState(false);
+  interface SeasonData {
+    temperature?: number;
+    rainfall?: number;
+    humidity?: number;
+  }
+
+  interface SoilData {
+    ph?: number;
+    nitrogen?: number;
+    phosphorus?: number;
+    potassium?: number;
+  }
+
+  interface WaterData {
+    availability?: string;
+    quality?: string;
+    source?: string;
+  }
+
+  interface CropData {
+    name: string;
+    yield?: number;
+    profit?: number;
+    suitability?: number;
+  }
+
   const [formData, setFormData] = useState({
     soilType: '',
+    soilData: null as SoilData | null,
     soilPh: '',
     irrigationAvailable: false,
     previousCrop: '',
-    location: ''
+    location: '',
+    season: '',
+    seasonData: null as SeasonData | null,
+    interestedCrops: [] as string[],
+    cropData: [] as CropData[],
+    waterSource: '',
+    waterData: null as WaterData | null
   });
   const { toast } = useToast();
 
@@ -268,91 +303,275 @@ const Recommendations = () => {
 
   // Manual trigger for generating real-time recommendations
   const handleGetAIRecommendations = () => {
-    if (formData.soilType || formData.soilPh || formData.location) {
-      const recommendations = calculateRealtimeRecommendations();
-      setRealtimeRecommendations(recommendations);
-      setShowRealtimeRecommendations(true);
-    } else {
+    try {
+      // Enhanced validation - check for essential data
+      const hasMinimumData = formData.location || formData.soilType || formData.season || formData.waterSource;
+      
+      // Additional validation checks
+      if (formData.soilPh && isNaN(parseFloat(formData.soilPh))) {
+        toast({
+          title: "❌ Invalid pH Value",
+          description: "Please enter a valid pH value (4.0 - 9.0)",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (formData.soilPh && (parseFloat(formData.soilPh) < 4.0 || parseFloat(formData.soilPh) > 9.0)) {
+        toast({
+          title: "⚠️ pH Out of Range",
+          description: "pH should be between 4.0 and 9.0 for agricultural purposes",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (hasMinimumData) {
+        setLoading(true);
+        
+        // Add small delay to show loading state
+        setTimeout(() => {
+          try {
+            const recommendations = calculateIntelligentRecommendations();
+            
+            if (!recommendations || recommendations.length === 0) {
+              toast({
+                title: "🤔 No Recommendations Found",
+                description: "Please try adjusting your selections or adding more information for better results.",
+                variant: "default",
+              });
+              setLoading(false);
+              return;
+            }
+            
+            setRealtimeRecommendations(recommendations);
+            setShowRealtimeRecommendations(true);
+            setLoading(false);
+            
+            // Show success message with summary
+            const selectedDataSummary = [];
+            if (formData.location) selectedDataSummary.push(`Location: ${formData.location}`);
+            if (formData.soilType) selectedDataSummary.push(`Soil: ${formData.soilType}`);
+            if (formData.season) selectedDataSummary.push(`Season: ${formData.season}`);
+            if (formData.waterSource) selectedDataSummary.push(`Water: ${formData.waterSource}`);
+            if (formData.interestedCrops.length > 0) selectedDataSummary.push(`Crops: ${formData.interestedCrops.length} selected`);
+            
+            toast({
+              title: "🌾 AI Recommendations Generated!",
+              description: `Analysis complete based on: ${selectedDataSummary.join(', ')}. Found ${recommendations.length} suitable crop recommendations.`,
+              variant: "default",
+            });
+          } catch (error) {
+            console.error('Error generating recommendations:', error);
+            toast({
+              title: "❌ Error Generating Recommendations",
+              description: "Please try again or check your input data.",
+              variant: "destructive",
+            });
+            setLoading(false);
+          }
+        }, 1500);
+      } else {
+        toast({
+          title: "📝 More Information Needed",
+          description: "Please select at least one: Location, Soil Type, Season, or Water Source to get intelligent recommendations.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error in handleGetAIRecommendations:', error);
       toast({
-        title: "Incomplete Information",
-        description: "Please fill at least one field (Soil Type, pH, or Location) to get recommendations.",
+        title: "❌ Unexpected Error",
+        description: "An error occurred while processing your request. Please try again.",
         variant: "destructive",
       });
+      setLoading(false);
     }
   };
 
-  const calculateRealtimeRecommendations = useCallback(() => {
+  const calculateIntelligentRecommendations = useCallback(() => {
     return cropDatabase.map(crop => {
-      let score = 70; // Base score
+      let score = 65; // Base score
+      const reasoning = [];
       
-      // Soil type compatibility
-      if (formData.soilType && crop.suitable_soils.includes(formData.soilType)) {
-        score += 15;
+      // Location-based compatibility (enhanced)
+      if (formData.location) {
+        const locationLower = formData.location.toLowerCase();
+        const locationData = {
+          'pune': { suitable: ['cotton', 'onion', 'tomato', 'wheat', 'maize'], bonus: 12 },
+          'maharashtra': { suitable: ['cotton', 'sugarcane', 'soybean', 'onion'], bonus: 10 },
+          'punjab': { suitable: ['wheat', 'rice', 'maize', 'cotton'], bonus: 15 },
+          'gujarat': { suitable: ['cotton', 'groundnut', 'wheat', 'sugarcane'], bonus: 12 },
+          'karnataka': { suitable: ['rice', 'cotton', 'maize', 'sugarcane'], bonus: 10 },
+          'tamil nadu': { suitable: ['rice', 'sugarcane', 'cotton', 'maize'], bonus: 12 },
+          'uttar pradesh': { suitable: ['wheat', 'rice', 'sugarcane', 'potato'], bonus: 13 },
+          'west bengal': { suitable: ['rice', 'potato', 'wheat', 'maize'], bonus: 11 },
+          'rajasthan': { suitable: ['wheat', 'cotton', 'maize', 'mustard'], bonus: 10 },
+          'haryana': { suitable: ['wheat', 'rice', 'cotton', 'sugarcane'], bonus: 14 }
+        };
+        
+        Object.entries(locationData).forEach(([region, data]) => {
+          if (locationLower.includes(region)) {
+            if (data.suitable.includes(crop.name.toLowerCase())) {
+              score += data.bonus;
+              reasoning.push(`Excellent for ${region} region`);
+            }
+          }
+        });
+      }
+      
+      // Soil type compatibility (enhanced)
+      if (formData.soilType && formData.soilData) {
+        if (crop.suitable_soils.includes(formData.soilType)) {
+          score += 18;
+          reasoning.push(`Perfect soil match (${formData.soilType})`);
+        } else {
+          // Check if soil is marginally suitable
+          const soilData = formData.soilData;
+          if (soilData.fertility === 'high' && crop.suitable_soils.some(soil => 
+            ['loamy', 'alluvial', 'black'].includes(soil))) {
+            score += 8;
+            reasoning.push('Good soil fertility compensates');
+          }
+        }
+      }
+      
+      // Season compatibility (enhanced)
+      if (formData.season && formData.seasonData) {
+        if (crop.seasons.includes(formData.season.charAt(0).toUpperCase() + formData.season.slice(1))) {
+          score += 20;
+          reasoning.push(`Perfect season (${formData.season})`);
+        } else if (crop.seasons.includes('Year-round')) {
+          score += 10;
+          reasoning.push('Year-round cultivation possible');
+        }
+        
+        // Additional season-specific bonuses
+        const seasonData = formData.seasonData;
+        if (seasonData.primaryCrops.includes(crop.name)) {
+          score += 15;
+          reasoning.push('Primary crop for this season');
+        } else if (seasonData.secondaryCrops.includes(crop.name)) {
+          score += 8;
+          reasoning.push('Secondary crop option');
+        }
+      }
+      
+      // Water source compatibility (enhanced)
+      if (formData.waterSource && formData.waterData) {
+        const waterData = formData.waterData;
+        const cropWaterNeed = crop.water_requirement;
+        
+        // Match water availability with crop needs
+        if (waterData.suitableCrops && waterData.suitableCrops.includes(crop.name)) {
+          score += 15;
+          reasoning.push(`Ideal for ${waterData.name}`);
+        }
+        
+        // Water requirement vs availability scoring
+        if (formData.waterSource === 'drip' && ['high', 'medium'].includes(cropWaterNeed)) {
+          score += 12;
+          reasoning.push('Efficient water use with drip irrigation');
+        } else if (formData.waterSource === 'rainwater' && cropWaterNeed === 'low') {
+          score += 10;
+          reasoning.push('Suitable for rainfed cultivation');
+        } else if (formData.waterSource === 'borewell' && cropWaterNeed === 'high') {
+          score += 8;
+          reasoning.push('Adequate water supply for high-water crops');
+        }
+      }
+      
+      // User crop interest bonus
+      if (formData.interestedCrops.includes(crop.name.toLowerCase())) {
+        score += 25;
+        reasoning.push('Matches your interest');
       }
       
       // pH compatibility
       if (formData.soilPh) {
         const ph = parseFloat(formData.soilPh);
         if (ph >= crop.soil_ph_min && ph <= crop.soil_ph_max) {
-          score += 10;
+          score += 12;
+          reasoning.push(`Optimal pH range (${ph})`);
         } else {
-          score -= 5;
+          const deviation = Math.min(Math.abs(ph - crop.soil_ph_min), Math.abs(ph - crop.soil_ph_max));
+          if (deviation <= 0.5) {
+            score += 5;
+            reasoning.push('pH within acceptable range');
+          } else {
+            score -= 8;
+            reasoning.push('pH needs adjustment');
+          }
         }
       }
       
-      // Irrigation availability
-      if (formData.irrigationAvailable) {
-        if (crop.water_requirement === 'high') {
-          score += 5;
-        }
-      } else {
-        if (crop.water_requirement === 'low') {
-          score += 8;
-        } else if (crop.water_requirement === 'high') {
-          score -= 10;
-        }
-      }
-      
-      // Location-based adjustments (simple examples)
-      if (formData.location.toLowerCase().includes('maharashtra') || 
-          formData.location.toLowerCase().includes('pune')) {
-        if (['cotton', 'onion', 'tomato'].includes(crop.name.toLowerCase())) {
-          score += 5;
-        }
-      }
-      
-      // Previous crop rotation benefits
+      // Previous crop rotation benefits (enhanced)
       if (formData.previousCrop) {
         const prevCrop = formData.previousCrop.toLowerCase();
-        if (prevCrop.includes('rice') && crop.name.toLowerCase() === 'wheat') {
-          score += 8; // Good rotation
-        }
-        if (prevCrop.includes('wheat') && crop.name.toLowerCase() === 'cotton') {
-          score += 6;
-        }
+        const rotationBenefits = {
+          'rice': { beneficial: ['wheat', 'cotton', 'mustard'], bonus: 12 },
+          'wheat': { beneficial: ['cotton', 'rice', 'maize'], bonus: 10 },
+          'cotton': { beneficial: ['wheat', 'gram', 'soybean'], bonus: 8 },
+          'soybean': { beneficial: ['wheat', 'rice', 'cotton'], bonus: 15 }, // Nitrogen fixation benefit
+          'sugarcane': { beneficial: ['wheat', 'potato', 'onion'], bonus: 6 }
+        };
+        
+        Object.entries(rotationBenefits).forEach(([prev, data]) => {
+          if (prevCrop.includes(prev) && data.beneficial.includes(crop.name.toLowerCase())) {
+            score += data.bonus;
+            reasoning.push(`Good rotation after ${prev}`);
+          }
+        });
       }
       
-      // Cap the score between 60-99
-      score = Math.max(60, Math.min(99, score));
+      // Market demand and profitability adjustments
+      const marketFactors = {
+        'cotton': { demand: 0.9, export: true, bonus: 5 },
+        'onion': { demand: 1.1, volatile: true, bonus: 3 },
+        'tomato': { demand: 1.0, processing: true, bonus: 4 },
+        'wheat': { demand: 0.95, stable: true, bonus: 6 },
+        'rice': { demand: 1.0, stable: true, bonus: 5 },
+        'sugarcane': { demand: 0.85, assured: true, bonus: 7 }
+      };
       
-      // Add some variation to yield and profit based on score
-      const yieldMultiplier = (score / 85);
-      const profitMultiplier = (score / 90);
+      const marketData = marketFactors[crop.name.toLowerCase() as keyof typeof marketFactors];
+      if (marketData) {
+        score += marketData.bonus;
+        if (marketData.stable) reasoning.push('Stable market demand');
+        if (marketData.export) reasoning.push('Export potential');
+        if (marketData.processing) reasoning.push('Processing industry demand');
+      }
+      
+      // Cap the score between 45-98
+      score = Math.max(45, Math.min(98, score));
+      
+      // Calculate realistic yield and profit predictions
+      const yieldMultiplier = (score / 80);
+      const profitMultiplier = (score / 85);
+      
+      // Add seasonal and regional adjustments
+      let seasonalAdjustment = 1.0;
+      if (formData.season === 'kharif' && ['rice', 'cotton', 'sugarcane'].includes(crop.name.toLowerCase())) {
+        seasonalAdjustment = 1.1;
+      } else if (formData.season === 'rabi' && ['wheat', 'potato', 'onion'].includes(crop.name.toLowerCase())) {
+        seasonalAdjustment = 1.05;
+      }
       
       return {
         crop_name: crop.name,
         icon: crop.icon,
         suitability_score: Math.round(score),
-        yield_prediction: Math.round(crop.base_yield * yieldMultiplier * 10) / 10,
-        profit_estimate: Math.round(crop.base_profit * profitMultiplier),
-        benefits: crop.benefits,
+        yield_prediction: Math.round(crop.base_yield * yieldMultiplier * seasonalAdjustment * 10) / 10,
+        profit_estimate: Math.round(crop.base_profit * profitMultiplier * seasonalAdjustment),
+        benefits: [...crop.benefits, ...reasoning.slice(0, 3)],
         risk_factors: crop.risks,
         water_requirement: crop.water_requirement,
-        suitable_seasons: crop.seasons
+        suitable_seasons: crop.seasons,
+        detailed_info: crop.detailed_info
       };
     })
     .sort((a, b) => b.suitability_score - a.suitability_score)
-    .slice(0, 3); // Top 3 recommendations
+    .slice(0, 5); // Top 5 recommendations
   }, [formData, cropDatabase]);
 
   const openCropDetails = (crop: CropRecommendation) => {
@@ -629,111 +848,152 @@ const Recommendations = () => {
           </p>
         </div>
 
-        {/* Input Form */}
-        <Card className="earth-card p-8 mb-8 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-semibold text-foreground mb-6">Tell us about your field</h2>
+        {/* Enhanced Visual Input Form */}
+        <div className="max-w-6xl mx-auto mb-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-semibold text-foreground mb-4">Tell us about your field</h2>
+            <p className="text-muted-foreground">Provide details for accurate recommendations</p>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Soil Type
-              </label>
-              <Select value={formData.soilType} onValueChange={(value) => setFormData({...formData, soilType: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select soil type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="clay">Clay</SelectItem>
-                  <SelectItem value="sandy">Sandy</SelectItem>
-                  <SelectItem value="loamy">Loamy</SelectItem>
-                  <SelectItem value="black">Black Cotton</SelectItem>
-                  <SelectItem value="red">Red Soil</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Soil pH (optional)
-              </label>
-              <Input
-                type="number"
-                step="0.1"
-                min="4"
-                max="9"
-                value={formData.soilPh}
-                onChange={(e) => setFormData({...formData, soilPh: e.target.value})}
-                placeholder="e.g., 6.5"
+          <div className="space-y-8">
+            {/* Location Selection */}
+            <Card className="earth-card p-6">
+              <LocationSelector
+                selectedLocation={formData.location}
+                onLocationChange={(location) => setFormData({...formData, location})}
+                showWeather={true}
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Previous Crop (optional)
-              </label>
-              <Input
-                value={formData.previousCrop}
-                onChange={(e) => setFormData({...formData, previousCrop: e.target.value})}
-                placeholder="e.g., Rice, Wheat"
+            </Card>
+            
+            {/* Soil Type Selection */}
+            <Card className="earth-card p-6">
+              <VisualSoilSelector
+                selectedValue={formData.soilType}
+                onValueChange={(value, soilData) => setFormData({...formData, soilType: value, soilData: soilData})}
               />
-            </div>
+            </Card>
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Location
-              </label>
-              <Input
-                value={formData.location}
-                onChange={(e) => setFormData({...formData, location: e.target.value})}
-                placeholder="e.g., Pune, Maharashtra"
+            {/* Season Selection */}
+            <Card className="earth-card p-6">
+              <VisualSeasonSelector
+                selectedValue={formData.season}
+                onValueChange={(value, seasonData) => setFormData({...formData, season: value, seasonData: seasonData})}
               />
-            </div>
+            </Card>
 
-            <div className="md:col-span-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={formData.irrigationAvailable}
-                  onChange={(e) => setFormData({...formData, irrigationAvailable: e.target.checked})}
-                  className="rounded border-muted"
-                />
-                <span className="text-sm font-medium text-foreground">Irrigation facility available</span>
-              </label>
-            </div>
+            {/* Water Source Selection */}
+            <Card className="earth-card p-6">
+              <VisualWaterSelector
+                selectedValue={formData.waterSource}
+                onValueChange={(value, waterData) => setFormData({...formData, waterSource: value, waterData: waterData})}
+              />
+            </Card>
+
+            {/* Crop Interests */}
+            <Card className="earth-card p-6">
+              <VisualCropSelector
+                selectedValues={formData.interestedCrops}
+                onValueChange={(values, cropData) => setFormData({...formData, interestedCrops: values, cropData: cropData || []})}
+                maxSelections={5}
+                filterBySeason={formData.season}
+                filterBySoilType={formData.soilType}
+                filterByWaterSource={formData.waterSource}
+              />
+            </Card>
+
+            {/* Additional Details */}
+            <Card className="earth-card p-6">
+              <h3 className="text-lg font-medium text-foreground mb-6 flex items-center gap-2">
+                <span className="text-2xl">📝</span>
+                Additional Details
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+                    <span className="text-lg">🧪</span>
+                    Soil pH (optional)
+                  </label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    min="4"
+                    max="9"
+                    value={formData.soilPh}
+                    onChange={(e) => setFormData({...formData, soilPh: e.target.value})}
+                    placeholder="e.g., 6.5 (acidity/alkalinity)"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+                    <span className="text-lg">🌾</span>
+                    Previous Crop (optional)
+                  </label>
+                  <Input
+                    value={formData.previousCrop}
+                    onChange={(e) => setFormData({...formData, previousCrop: e.target.value})}
+                    placeholder="e.g., Rice, Wheat, Cotton"
+                  />
+                </div>
+              </div>
+            </Card>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          {/* Action Buttons */}
+          <Card className="earth-card p-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Button
               onClick={handleGetAIRecommendations}
               disabled={loading}
-              className="w-full bg-primary hover:bg-primary/90"
+              className="w-full bg-primary hover:bg-primary/90 transition-all duration-300 transform hover:scale-[1.02] disabled:transform-none disabled:opacity-60"
               size="lg"
             >
-              {loading ? 'Analyzing...' : 'Get Live Recommendations'}
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"></div>
+                  <span>Analyzing crop data...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">🌾</span>
+                  <span>Get Live Recommendations</span>
+                </div>
+              )}
             </Button>
             
             <Button
               onClick={generateRecommendations}
               disabled={loading || !user}
-              className="w-full bg-cta hover:bg-cta/90"
+              className="w-full bg-cta hover:bg-cta/90 transition-all duration-300 transform hover:scale-[1.02] disabled:transform-none disabled:opacity-60"
               size="lg"
             >
-              {loading ? 'Saving...' : 'Save AI Recommendations'}
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cta-foreground"></div>
+                  <span>Saving recommendations...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">💾</span>
+                  <span>Save AI Recommendations</span>
+                </div>
+              )}
             </Button>
-          </div>
+            </div>
 
-          {!user && (
-            <p className="text-center text-muted-foreground mt-4">
-              Please <a href="/auth" className="text-primary hover:underline">sign in</a> to get recommendations
-            </p>
-          )}
-        </Card>
+            {!user && (
+              <p className="text-center text-muted-foreground mt-4">
+                Please <a href="/auth" className="text-primary hover:underline">sign in</a> to get recommendations
+              </p>
+            )}
+          </Card>
+        </div>
 
         {/* Comprehensive Weather Analytics Section */}
         {(weather || weatherLoading || formData.location) && (
           <div className="mb-8 max-w-6xl mx-auto">
             {/* Header with Real-time Date & Time */}
-            <div className="text-center mb-6">
+            <div className="text-center mb-6 animate-in fade-in duration-500">
               <h2 className="text-2xl font-semibold text-foreground mb-2 flex items-center justify-center gap-2">
                 <Sun className="w-6 h-6 text-primary" />
                 Weather Analytics
@@ -864,7 +1124,7 @@ const Recommendations = () => {
 
         {/* Real-time Recommendations */}
         {showRealtimeRecommendations && realtimeRecommendations.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-8 animate-in slide-in-from-bottom-4 duration-700">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-semibold text-foreground mb-2">
                 Live AI Recommendations \ud83e\udd16
@@ -876,7 +1136,11 @@ const Recommendations = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {realtimeRecommendations.map((crop, index) => (
-                <Card key={index} className="earth-card p-6 hover-glow animate-fade-in">
+                <Card 
+                  key={index} 
+                  className="earth-card p-6 hover-glow transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl animate-in slide-in-from-bottom-4 duration-500"
+                  style={{ animationDelay: `${index * 150}ms` }}
+                >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -929,11 +1193,14 @@ const Recommendations = () => {
                   </div>
 
                   <Button 
-                    className="w-full mt-4 bg-primary" 
+                    className="w-full mt-4 bg-primary hover:bg-primary/90 transition-all duration-300 transform hover:scale-[1.02]" 
                     size="sm"
                     onClick={() => openCropDetails(crop)}
                   >
-                    View Detailed Plan
+                    <div className="flex items-center gap-2">
+                      <span>View Detailed Plan</span>
+                      <span className="text-sm">🔍</span>
+                    </div>
                   </Button>
                 </Card>
               ))}
@@ -962,7 +1229,7 @@ const Recommendations = () => {
           </div>
         )}
 
-        {recommendations.length === 0 && user && (
+        {recommendations.length === 0 && !showRealtimeRecommendations && user && (
           <Card className="earth-card p-12 text-center">
             <div className="text-6xl mb-4">🌱</div>
             <h3 className="text-xl font-semibold text-foreground mb-2">No recommendations yet</h3>

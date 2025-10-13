@@ -152,6 +152,38 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    /* Better font rendering for different languages */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+  }
+
+  /* Enhanced text rendering for English content */
+  .text-optimized {
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  /* Better text contrast for readability */
+  .text-enhance {
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Responsive text utilities */
+  .text-responsive {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+    line-height: 1.5;
+  }
+
+  .text-responsive-lg {
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    line-height: 1.6;
+  }
+
+  .text-responsive-xl {
+    font-size: clamp(1.25rem, 4vw, 1.875rem);
+    line-height: 1.4;
   }
 }
 
@@ -188,6 +220,20 @@
 
   .glass-gradient {
     background: var(--gradient-glass);
+  }
+
+  .sky-gradient {
+    background: linear-gradient(135deg, hsl(160 30% 98%) 0%, hsl(200 50% 96%) 50%, hsl(160 20% 95%) 100%);
+  }
+
+  .warm-gradient {
+    background: linear-gradient(135deg, hsl(45 40% 98%) 0%, hsl(35 50% 96%) 50%, hsl(160 20% 95%) 100%);
+  }
+
+  .earth-card {
+    @apply bg-card-soft backdrop-blur-sm rounded-2xl shadow-soft border border-border/10
+           transition-[var(--transition-spring)] hover:shadow-card
+           hover:bg-card hover:border-border/20;
   }
 
   /* Holographic Buttons */

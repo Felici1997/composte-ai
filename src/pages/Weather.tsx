@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { LocationSelector } from '@/components/LocationSelector';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { MapPin, Cloud, Sun, CloudRain, Wind, Droplets, Eye, Thermometer } from 'lucide-react';
 
 const Weather = () => {
+  const { t } = useLanguage();
   const [location, setLocation] = useState('Pune, Maharashtra');
+  const [showLocationSelector, setShowLocationSelector] = useState(false);
   const [currentWeather, setCurrentWeather] = useState({
     temperature: 28,
     humidity: 65,
@@ -13,6 +17,7 @@ const Weather = () => {
     rainfall: 0,
     uvIndex: 6
   });
+  const [weatherData, setWeatherData] = useState(null);
 
   const weeklyForecast = [
     { day: 'Today', date: 'Jan 15', temp: { min: 18, max: 28 }, condition: 'Partly Cloudy', rain: 20, icon: '⛅' },
@@ -92,33 +97,63 @@ const Weather = () => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            Weather Insights 🌤️
+            {t('location.weather')} 🌤️
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Detailed weather forecasts and farming-specific insights to optimize your agricultural activities
+            {t('location.subtitle')}
           </p>
         </div>
 
-        {/* Location Search */}
+        {/* Location Selection */}
         <Card className="earth-card p-6 mb-8 max-w-2xl mx-auto">
-          <div className="flex space-x-4">
-            <Input
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Enter your location"
-              className="flex-1"
-            />
-            <Button className="bg-primary">
-              <span className="mr-2">📍</span>
-              Update Location
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
+            <div className="flex-1 text-center sm:text-left">
+              <div className="font-medium text-foreground">{t('location.title')}</div>
+              <div className="text-sm text-muted-foreground">{location}</div>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setShowLocationSelector(!showLocationSelector)}
+              className="whitespace-nowrap"
+            >
+              <MapPin className="w-4 h-4 mr-2" />
+              {t('location.title')}
             </Button>
           </div>
         </Card>
 
+        {/* Location Selector */}
+        {showLocationSelector && (
+          <Card className="earth-card p-6 mb-8 max-w-4xl mx-auto">
+            <LocationSelector
+              selectedLocation={location}
+              onLocationChange={(loc) => {
+                setLocation(loc);
+                setShowLocationSelector(false);
+              }}
+              onWeatherUpdate={(weather) => {
+                setWeatherData(weather);
+                if (weather) {
+                  setCurrentWeather({
+                    temperature: Math.round(weather.temperature),
+                    humidity: weather.humidity,
+                    windSpeed: Math.round(weather.windSpeed * 3.6), // Convert m/s to km/h
+                    condition: weather.description,
+                    rainfall: 0, // This would need to be calculated from weather data
+                    uvIndex: 6 // This would need UV index from weather API
+                  });
+                }
+              }}
+              showWeather={true}
+            />
+          </Card>
+        )}
+
         {/* Current Weather */}
         <Card className="earth-card p-8 mb-8">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-semibold text-foreground mb-2">Current Weather</h2>
+            <h2 className="text-2xl font-semibold text-foreground mb-2">{t('location.weather')}</h2>
             <p className="text-muted-foreground">{location}</p>
           </div>
 
@@ -133,7 +168,7 @@ const Weather = () => {
               <div className="flex items-center justify-between p-3 bg-card-soft rounded-lg">
                 <div className="flex items-center space-x-3">
                   <span className="text-xl">💧</span>
-                  <span className="text-foreground">Humidity</span>
+                  <span className="text-foreground">{t('location.humidity')}</span>
                 </div>
                 <span className="font-semibold text-foreground">{currentWeather.humidity}%</span>
               </div>
@@ -141,7 +176,7 @@ const Weather = () => {
               <div className="flex items-center justify-between p-3 bg-card-soft rounded-lg">
                 <div className="flex items-center space-x-3">
                   <span className="text-xl">💨</span>
-                  <span className="text-foreground">Wind Speed</span>
+                  <span className="text-foreground">{t('location.wind')}</span>
                 </div>
                 <span className="font-semibold text-foreground">{currentWeather.windSpeed} km/h</span>
               </div>

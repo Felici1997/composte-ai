@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriTech Features Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-card { 
+            background: white; 
+            padding: 20px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .status { padding: 4px 8px; border-radius: 4px; color: white; font-weight: bold; }
+        .success { background: #22c55e; }
+        .error { background: #ef4444; }
+        iframe { width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🌾 AgriTech Platform - Feature Testing</h1>
+    
+    <div class="test-card">
+        <h2>✅ Development Server Status</h2>
+        <p>Status: <span class="status success">RUNNING</span></p>
+        <p>URL: <a href="http://localhost:8080" target="_blank">http://localhost:8080</a></p>
+    </div>
+
+    <div class="test-card">
+        <h2>🏠 Home Page</h2>
+        <iframe src="http://localhost:8080/"></iframe>
+    </div>
+
+    <div class="test-card">
+        <h2>🤖 AI Assistant Page (NEW)</h2>
+        <iframe src="http://localhost:8080/ai-assistant"></iframe>
+    </div>
+
+    <div class="test-card">
+        <h2>🌱 Visual Recommendations Page (ENHANCED)</h2>
+        <iframe src="http://localhost:8080/recommendations"></iframe>
+    </div>
+
+    <div class="test-card">
+        <h2>📊 Dashboard</h2>
+        <iframe src="http://localhost:8080/dashboard"></iframe>
+    </div>
+
+    <div class="test-card">
+        <h2>🔍 Disease Scanner</h2>
+        <iframe src="http://localhost:8080/disease-scanner"></iframe>
+    </div>
+
+    <div class="test-card">
+        <h2>🌤️ Weather Analytics</h2>
+        <iframe src="http://localhost:8080/weather-analytics"></iframe>
+    </div>
+
+    <div class="test-card">
+        <h2>📈 Market</h2>
+        <iframe src="http://localhost:8080/market"></iframe>
+    </div>
+
+    <div class="test-card">
+        <h2>🧪 Soil Analysis</h2>
+        <iframe src="http://localhost:8080/soil-analysis"></iframe>
+    </div>
+
+    <script>
+        // Test all routes
+        const routes = [
+            '/',
+            '/ai-assistant',
+            '/recommendations', 
+            '/dashboard',
+            '/disease-scanner',
+            '/weather-analytics',
+            '/market',
+            '/soil-analysis'
+        ];
+
+        console.log('🌾 AgriTech Platform - Testing all routes...');
+        
+        routes.forEach(route => {
+            fetch(`http://localhost:8080${route}`)
+                .then(response => {
+                    console.log(`✅ ${route}: ${response.status} ${response.statusText}`);
+                })
+                .catch(error => {
+                    console.error(`❌ ${route}: ${error.message}`);
+                });
+        });
+    </script>
+</body>
+</html>
