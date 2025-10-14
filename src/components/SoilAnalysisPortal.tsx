@@ -145,12 +145,10 @@ const SoilAnalysisPortal: React.FC = () => {
   };
 
   const languages = [
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'hi', name: 'हिंदी', flag: '🇮🇳' },
-    { code: 'te', name: 'తెలుగు', flag: '🇮🇳' }
+    { code: 'en', name: 'English', flag: '🇺🇸' }
   ];
 
-  const getCurrentTranslation = () => translations[selectedLanguage as keyof typeof translations] || translations.en;
+  const getCurrentTranslation = () => translations.en;
 
   // Location data for Indian regions
   const locationOptions = [

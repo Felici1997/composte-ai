@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#f8f8f8"/>
+  
+  <!-- Leaf with circuit board pattern -->
+  <g transform="translate(250, 115) scale(1.2)">
+    <!-- Outer leaf shape -->
+    <path d="M300 40C180 40 80 140 60 320C140 260 180 240 240 200C180 280 120 300 80 340C120 360 240 380 300 320C360 260 380 80 300 40Z" fill="#7BC043"/>
+    
+    <!-- Dark green circuit pattern part -->
+    <path d="M60 320C60 320 120 200 180 160C240 120 300 40 300 40C240 60 160 120 120 180C80 240 60 320 60 320Z" fill="#0A6E31"/>
+    
+    <!-- Circuit lines and dots -->
+    <path d="M60 320L100 280M100 280L140 280M140 280L180 240M180 240L220 240M220 240L260 200M260 200L280 160M280 160L300 120M300 120L300 80M300 80L280 60M280 60L260 40" stroke="#00A6ED" stroke-width="4"/>
+    <circle cx="100" cy="280" r="6" fill="white"/>
+    <circle cx="140" cy="280" r="6" fill="white"/>
+    <circle cx="180" cy="240" r="6" fill="white"/>
+    <circle cx="220" cy="240" r="6" fill="white"/>
+    <circle cx="260" cy="200" r="6" fill="white"/>
+    <circle cx="280" cy="160" r="6" fill="white"/>
+    <circle cx="300" cy="120" r="6" fill="white"/>
+    <circle cx="300" cy="80" r="6" fill="white"/>
+    <circle cx="280" cy="60" r="6" fill="white"/>
+    <circle cx="260" cy="40" r="6" fill="white"/>
+    <circle cx="60" cy="320" r="6" fill="white"/>
+    
+    <!-- More circuit paths -->
+    <path d="M100 280L100 320M140 280L140 340M180 240L180 280M220 240L220 280M260 200L300 180" stroke="#00A6ED" stroke-width="4"/>
+    <circle cx="100" cy="320" r="6" fill="white"/>
+    <circle cx="140" cy="340" r="6" fill="white"/>
+    <circle cx="180" cy="280" r="6" fill="white"/>
+    <circle cx="220" cy="280" r="6" fill="white"/>
+    <circle cx="300" cy="180" r="6" fill="white"/>
+    
+    <!-- AI brain symbol -->
+    <circle cx="210" cy="200" r="30" fill="white" fill-opacity="0.9"/>
+    <path d="M195 190C195 190 205 180 225 190M195 210C195 210 205 220 225 210M210 180V220M200 195H220M200 205H220" stroke="#0A6E31" stroke-width="3"/>
+    <text x="210" y="205" font-family="Arial" font-size="18" font-weight="bold" fill="#0A6E31" text-anchor="middle" dominant-baseline="middle">AI</text>
+  </g>
+  
+  <!-- Agri-tech text -->
+  <g transform="translate(600, 350) scale(1.2)">
+    <!-- Agri (dark green) -->
+    <path d="M50 -80L25 80H0L-25 -80H5L25 40L45 -80H50Z" fill="#0A6E31"/>
+    <path d="M100 -30C100 -50 90 -80 60 -80C30 -80 20 -50 20 -30V30C20 50 30 80 60 80C90 80 100 50 100 30V-30ZM70 30C70 40 65 50 60 50C55 50 50 40 50 30V-30C50 -40 55 -50 60 -50C65 -50 70 -40 70 -30V30Z" fill="#0A6E31"/>
+    <path d="M160 -80L150 -40H120L110 0H140L130 40H100L90 80H60L100 -80H160Z" fill="#0A6E31"/>
+    <path d="M200 -80V40C200 50 195 50 190 50C185 50 180 50 180 40V-80H150V40C150 70 170 80 190 80C210 80 230 70 230 40V-80H200Z" fill="#0A6E31"/>
+    
+    <!-- Hyphen -->
+    <rect x="240" y="-10" width="40" height="20" fill="#0A6E31"/>
+    
+    <!-- tech (light green) -->
+    <path d="M330 -80H300V80H330V-80Z" fill="#7BC043"/>
+    <path d="M400 -50C385 -50 370 -40 370 -20V-10H400V-20C400 -25 405 -30 410 -30C415 -30 420 -25 420 -20C420 -5 370 5 370 35C370 65 390 80 410 80C425 80 440 70 440 50V40H410V50C410 55 405 60 400 60C395 60 390 55 390 50C390 35 440 25 440 -5C440 -35 420 -50 400 -50Z" fill="#7BC043"/>
+    <path d="M510 -50C495 -50 480 -40 480 -20V50C480 70 495 80 510 80C525 80 540 70 540 50V30H510V50C510 55 505 60 500 60C495 60 490 55 490 50V-20C490 -25 495 -30 500 -30C505 -30 510 -25 510 -20V0H540V-20C540 -40 525 -50 510 -50Z" fill="#7BC043"/>
+    <path d="M600 -50V-30C595 -40 585 -50 575 -50C555 -50 540 -30 540 0V30C540 60 555 80 575 80C585 80 595 70 600 60V80H630V-50H600ZM600 30C600 40 595 50 585 50C575 50 570 40 570 30V0C570 -10 575 -20 585 -20C595 -20 600 -10 600 0V30Z" fill="#7BC043"/>
+  </g>
+  
+  <!-- Tagline -->
+  <text x="600" y="500" font-family="Arial, sans-serif" font-size="28" fill="#333" text-anchor="middle">AI-Powered Crop Recommendation Platform</text>
+</svg>
