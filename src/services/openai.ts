@@ -1,5 +1,5 @@
-// OpenAI API Service for AgriTech AI Assistant
-// Provides intelligent agricultural advice and recommendations
+// Service IA — Composte AI Congo Brazzaville
+// Conseils agricoles intelligents en français pour les agriculteurs congolais
 
 interface OpenAIMessage {
   role: 'system' | 'user' | 'assistant';
@@ -27,13 +27,13 @@ export class OpenAIService {
   constructor() {
     this.apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!this.apiKey) {
-      console.warn('OpenAI API key not found. AI features will use fallback responses.');
+      console.warn('Clé API OpenAI non trouvée. Utilisation des réponses de secours.');
     }
   }
 
   async generateCropRecommendation(
     soil: string,
-    season: string, 
+    season: string,
     location: string,
     budget?: number
   ): Promise<string> {
@@ -44,29 +44,35 @@ export class OpenAIService {
     const messages: OpenAIMessage[] = [
       {
         role: 'system',
-        content: `You are an AI-powered land monitoring and crop recommendation expert designed for Indian farmers. Your job is to analyze land, soil, and weather data and provide clear, helpful, voice-friendly advice in simple language.
-        
-        Guidelines:
-        - Use simple Hindi-English mix words that farmers understand
-        - Speak like a friendly farming expert, not a robot
-        - Give practical advice that can be implemented immediately
-        - Use familiar farming terms and local crop names
-        - Structure responses for voice reading (short sentences, clear pauses)
-        - Include specific numbers, quantities, and timelines
-        - Focus on low-cost, practical solutions for small farmers
-        - Always end with encouraging words about good harvest
-        
-        Your responses should sound natural when read aloud to farmers who may not be able to read.`
+        content: `Tu es un expert agronome spécialisé dans l'agriculture au Congo Brazzaville. 
+Tu conseilles les agriculteurs congolais en français simple et pratique.
+
+Contexte Congo Brazzaville :
+- Deux grandes saisons des pluies : octobre-décembre et mars-mai
+- Deux saisons sèches : juin-septembre (grande) et janvier-février (petite)
+- Cultures principales : manioc, maïs, banane plantain, arachides, légumes, igname, cacao, café, palmier à huile
+- Sols : ferralitiques, sablo-argileux, latéritiques, alluvionnaires selon les régions
+- Monnaie : FCFA
+- Marchés principaux : Brazzaville, Pointe-Noire, marchés de quartier
+- Départements : Pool, Bouenza, Niari, Cuvette, Sangha, Likouala, Plateaux, Lékoumou, Kouilou
+
+Directives :
+- Parle comme un ami agriculteur expérimenté, pas comme un robot
+- Utilise des termes locaux congolais quand pertinent
+- Donne des conseils pratiques applicables immédiatement
+- Cite des prix en FCFA
+- Structure tes réponses clairement avec des emojis
+- Termine toujours par une note encourageante`
       },
       {
         role: 'user',
-        content: `Please recommend crops for:
-        - Soil Type: ${soil}
-        - Season: ${season}
-        - Location: ${location}
-        ${budget ? `- Budget: ₹${budget}` : ''}
-        
-        Provide specific crop suggestions with yield estimates and profit potential.`
+        content: `Recommande-moi des cultures pour :
+- Type de sol : ${soil}
+- Saison : ${season}
+- Localité : ${location}
+${budget ? `- Budget disponible : ${budget.toLocaleString()} FCFA` : ''}
+
+Donne des suggestions précises avec les rendements estimés et le potentiel de profit.`
       }
     ];
 
@@ -74,7 +80,7 @@ export class OpenAIService {
       const response = await this.callOpenAI(messages);
       return response || this.getFallbackCropRecommendation(soil, season, location, budget);
     } catch (error) {
-      console.error('OpenAI API Error:', error);
+      console.error('Erreur API OpenAI:', error);
       return this.getFallbackCropRecommendation(soil, season, location, budget);
     }
   }
@@ -92,29 +98,31 @@ export class OpenAIService {
     const messages: OpenAIMessage[] = [
       {
         role: 'system',
-        content: `You are an AI-powered land monitoring and crop recommendation expert designed for Indian farmers. Your job is to analyze plant diseases and provide clear, helpful, voice-friendly treatment advice in simple language.
-        
-        Guidelines:
-        - Speak like a caring farming doctor who understands farmer problems
-        - Use simple words that can be easily understood when spoken aloud
-        - Give step-by-step treatment like recipe instructions
-        - Mention local medicine names and home remedies
-        - Include cost estimates in rupees for treatments
-        - Use encouraging tone - "Don't worry, this can be fixed"
-        - Structure for voice: short sentences, clear instructions
-        - Always reassure about recovery chances
-        
-        Your responses should sound natural when read aloud to farmers.`
+        content: `Tu es un phytopathologiste expert pour l'agriculture au Congo Brazzaville.
+Tu diagnostiques les maladies des plantes et conseilles les agriculteurs en français clair.
+
+Contexte Congo Brazzaville :
+- Maladies courantes : mosaïque du manioc, anthracnose, rouille, pourriture des racines, cercosporiose bananière
+- Traitements disponibles : produits phytosanitaires vendus à Brazzaville et Pointe-Noire
+- Remèdes naturels : neem, cendres de bois, extrait de piment, savon noir
+- Monnaie : FCFA
+
+Directives :
+- Explique le traitement étape par étape comme une recette
+- Mentionne les produits disponibles localement au Congo
+- Donne des alternatives naturelles et économiques
+- Rassure l'agriculteur, sois encourageant
+- Indique les délais de guérison estimés`
       },
       {
         role: 'user',
-        content: `Disease Details:
-        - Disease: ${diseaseName}
-        - Crop: ${cropType}
-        - Severity: ${severity}
-        - Symptoms: ${symptoms.join(', ')}
-        
-        Please provide comprehensive treatment and prevention advice.`
+        content: `Maladie détectée :
+- Maladie : ${diseaseName}
+- Culture : ${cropType}
+- Gravité : ${severity}
+- Symptômes : ${symptoms.join(', ')}
+
+Donne un traitement complet et des conseils de prévention.`
       }
     ];
 
@@ -122,7 +130,7 @@ export class OpenAIService {
       const response = await this.callOpenAI(messages);
       return response || this.getFallbackDiseaseAdvice(diseaseName, cropType, severity);
     } catch (error) {
-      console.error('OpenAI API Error:', error);
+      console.error('Erreur API OpenAI:', error);
       return this.getFallbackDiseaseAdvice(diseaseName, cropType, severity);
     }
   }
@@ -135,23 +143,26 @@ export class OpenAIService {
     const messages: OpenAIMessage[] = [
       {
         role: 'system',
-        content: `You are an AI-powered land monitoring and crop recommendation expert designed for Indian farmers. Your job is to analyze farming questions and provide clear, helpful, voice-friendly advice in simple language.
-        
-        Guidelines:
-        - Talk like a knowledgeable farmer friend, not a textbook
-        - Use everyday language that sounds natural when spoken
-        - Give practical solutions that farmers can do with available resources
-        - Include cost details in rupees and local market information
-        - Use familiar examples from Indian farming
-        - Structure for voice reading: clear, short sentences
-        - Always encourage farmers and build confidence
-        - Mention government schemes by simple names
-        
-        Your responses should be helpful when read aloud to farmers who may not read well.`
+        content: `Tu es un conseiller agricole expert au Congo Brazzaville, parlant français.
+Tu aides les agriculteurs congolais avec des conseils pratiques et adaptés à leur réalité.
+
+Contexte Congo Brazzaville :
+- Agriculture principalement vivrière et de subsistance
+- Cultures commerciales : manioc, plantain, maraîchage, cacao, café, palmier à huile
+- Marchés : Brazzaville (marché Total, Moungali, Mfilou), Pointe-Noire, marchés locaux
+- Soutien : Ministère de l'Agriculture du Congo, coopératives agricoles locales
+- Monnaie : FCFA
+
+Directives :
+- Parle comme un ami agriculteur congolais expérimenté
+- Donne des solutions avec les ressources disponibles localement
+- Cite les prix en FCFA et les marchés locaux
+- Structure avec des emojis pour la lisibilité
+- Termine toujours par des encouragements`
       },
       {
         role: 'user',
-        content: `${context ? `Context: ${context}\n\n` : ''}Question: ${query}`
+        content: `${context ? `Contexte : ${context}\n\n` : ''}Question : ${query}`
       }
     ];
 
@@ -159,7 +170,7 @@ export class OpenAIService {
       const response = await this.callOpenAI(messages);
       return response || this.getFallbackFarmingAdvice(query);
     } catch (error) {
-      console.error('OpenAI API Error:', error);
+      console.error('Erreur API OpenAI:', error);
       return this.getFallbackFarmingAdvice(query);
     }
   }
@@ -176,31 +187,34 @@ export class OpenAIService {
     const messages: OpenAIMessage[] = [
       {
         role: 'system',
-        content: `You are an AI-powered land monitoring and crop recommendation expert designed for Indian farmers. Your job is to analyze weather data and provide clear, helpful, voice-friendly farming advice in simple language.
-        
-        Guidelines:
-        - Explain weather like a local farming expert would
-        - Use simple weather words that farmers know
-        - Give immediate action items based on weather
-        - Structure advice for voice reading with clear pauses
-        - Use encouraging tone about weather challenges
-        - Include timing: "today do this, tomorrow do that"
-        - Mention familiar weather patterns and seasons
-        - Always end with positive farming outlook
-        
-        Your responses should sound natural when read aloud to farmers.`
+        content: `Tu es un agronome spécialisé en météorologie agricole au Congo Brazzaville.
+Tu analyses les conditions météo et conseilles les agriculteurs congolais en français.
+
+Contexte Congo Brazzaville :
+- Climat équatorial et tropical humide
+- Température moyenne : 24-28°C
+- Humidité élevée : 70-90%
+- Risques : inondations en saison des pluies, sécheresse en saison sèche
+- Cultures sensibles : manioc, maïs, légumes maraîchers, plantain
+
+Directives :
+- Explique la météo avec des mots simples
+- Donne des actions concrètes pour aujourd'hui et demain
+- Alerte sur les risques spécifiques aux cultures citées
+- Conseille sur l'irrigation et le drainage
+- Sois pratique et encourageant`
       },
       {
         role: 'user',
-        content: `Current Weather Analysis:
-        - Location: ${location}
-        - Temperature: ${weather.temp}°C
-        - Humidity: ${weather.humidity}%
-        - Weather: ${weather.description}
-        - Wind: ${weather.windSpeed} km/h
-        - Current Crops: ${crops.join(', ')}
-        
-        Please provide weather-specific farming recommendations.`
+        content: `Météo actuelle :
+- Localité : ${location}
+- Température : ${weather.temp}°C
+- Humidité : ${weather.humidity}%
+- Conditions : ${weather.description}
+- Vent : ${weather.windSpeed} km/h
+- Cultures en cours : ${crops.join(', ')}
+
+Donne des recommandations agricoles adaptées à ces conditions.`
       }
     ];
 
@@ -208,7 +222,7 @@ export class OpenAIService {
       const response = await this.callOpenAI(messages);
       return response || this.getFallbackWeatherAdvice(weather, crops);
     } catch (error) {
-      console.error('OpenAI API Error:', error);
+      console.error('Erreur API OpenAI:', error);
       return this.getFallbackWeatherAdvice(weather, crops);
     }
   }
@@ -232,148 +246,134 @@ export class OpenAIService {
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      throw new Error(`Erreur API OpenAI: ${response.status} ${response.statusText}`);
     }
 
     const data: OpenAIResponse = await response.json();
     return data.choices[0]?.message?.content || null;
   }
 
-  // Fallback responses when API is unavailable - Voice-friendly for farmers
+  // ── Réponses de secours (sans clé API) ──────────────────────────────────────
+
   private getFallbackCropRecommendation(soil: string, season: string, location: string, budget?: number): string {
-    const recommendations = {
-      'Kharif': ['Dhaan (Rice)', 'Kapas (Cotton)', 'Ganna (Sugarcane)', 'Makka (Maize)', 'Dal (Pulses)'],
-      'Rabi': ['Gehun (Wheat)', 'Jau (Barley)', 'Sarson (Mustard)', 'Chana (Gram)', 'Matar (Peas)'],
-      'Zaid': ['Chara (Fodder)', 'Tarbooj (Watermelon)', 'Kharbooja (Muskmelon)', 'Kheera (Cucumber)', 'Makka Chara']
-    };
+    const isSaisonPluies = season.toLowerCase().includes('pluie') || season.toLowerCase().includes('mars') || season.toLowerCase().includes('octobre');
+    const cultures = isSaisonPluies
+      ? { principale: 'Manioc', secondaire: 'Maïs', alternative: 'Arachides' }
+      : { principale: 'Légumes maraîchers', secondaire: 'Haricots', alternative: 'Amarante' };
 
-    const seasonCrops = recommendations[season as keyof typeof recommendations] || recommendations['Kharif'];
-    const primaryCrop = seasonCrops[0];
-    const secondaryCrop = seasonCrops[1];
-    const alternativeCrop = seasonCrops[2];
+    return `🌱 **Recommandations de cultures — ${location}**
 
-    return `🌾 **${season} Season के लिए फसल सुझाव**
+Bonjour ! Pour votre sol **${soil}** en **${season}**, voici mes conseils :
 
-Namaste farmer bhai! ${location} में ${soil} मिट्टी के लिए ये फसलें अच्छी हैं:
+**✅ Culture principale recommandée : ${cultures.principale}**
+• Très bien adapté à votre sol et à la saison
+• Forte demande sur les marchés de Brazzaville et Pointe-Noire
+• Rendement estimé : 8 à 15 tonnes/hectare
 
-**सबसे अच्छी Choice:** ${primaryCrop}
-• अच्छा मुनाफा मिलेगा
-• Market में demand अच्छी है
-• आपकी मिट्टी के लिए perfect है
+**🌿 Deuxième choix : ${cultures.secondaire}**
+• Moins risqué, rendement fiable
+• Cycle court — récolte en 3 mois
+• Prix stable au marché local
 
-**दूसरा Option:** ${secondaryCrop}
-• कम risk है
-• पक्का फायदा होगा
-• Safe choice है
+**💡 Alternative rentable : ${cultures.alternative}**
+• Meilleure marge mais plus de travail
+• Bon débouché sur les marchés de quartier
+${budget ? `\n**💰 Avec ${budget.toLocaleString()} FCFA :** commencez par ${cultures.principale} sur une petite parcelle pour sécuriser votre investissement.` : ''}
 
-**तीसरा Option:** ${alternativeCrop}
-• ज्यादा पैसा कमा सकते हैं
-• थोड़ा ज्यादा mehnat चाहिए
+**📋 Actions immédiates :**
+• Préparez votre sol 2 semaines avant le semis
+• Apportez du compost ou de la fumure organique
+• Assurez un bon drainage si sol argileux
+• Procurez des semences certifiées auprès de l'ANADER
 
-**आज ही करें:**
-• मिट्टी की जांच कराएं
-• अच्छे बीज लेकर आएं
-• पानी का इंतजाम देखें
-• मौसम की जानकारी लें
-${budget ? `• ₹${budget} budget में ${primaryCrop} सबसे अच्छी होगी` : ''}
+**📈 Potentiel de revenus :** 150 000 à 400 000 FCFA/ha selon la culture et le marché.
 
-**Good News:** सही तरीके से करें तो बहुत अच्छी फसल होगी! 🎉
-
-*अपने area के कृषि अधिकारी से भी मिलकर बात करें।*`;
+Bonne récolte ! 🌾`;
   }
 
   private getFallbackDiseaseAdvice(diseaseName: string, cropType: string, severity: string): string {
-    return `🩺 **${diseaseName} का इलाज - ${cropType} की फसल**
+    const urgent = severity === 'severe' || severity === 'sévère' || severity === 'élevée';
+    return `🩺 **Traitement : ${diseaseName} sur ${cropType}**
 
-Don't worry farmer bhai! ये बीमारी ठीक हो जाएगी। बस ये steps follow करें:
+Ne vous inquiétez pas, cette maladie se traite ! Suivez ces étapes :
 
-**आज ही करें (तुरंत):**
-1. खराब leaves और branches तोड़कर फेंक दें
-2. बीमार plants को अलग कर दें
-3. Plants के बीच हवा आने का रास्ता बनाएं
-4. पानी कम दें - ज्यादा पानी से problem बढ़ेगी
+**🚨 Actions immédiates${urgent ? ' — URGENT, agissez dans les 24h' : ''} :**
+1. Retirez et brûlez les feuilles et tiges malades
+2. Isolez les plants les plus touchés
+3. Arrosez uniquement à la base (plus par le dessus)
+4. Améliorez la ventilation entre les plants
 
-**दवाई Options:**
-• **Desi नुस्खा:** नीम का तेल - 1 लीटर पानी में 2-3ml मिलाकर spray करें
-• **Market दवाई:** Copper wala fungicide - packet पर लिखे हिसाब से use करें
-• **कब लगाएं:** 7-10 दिन में एक बार, बारिश के time ज्यादा जरूरी
+**💊 Traitements disponibles au Congo :**
+• **Remède naturel :** Extrait de neem — 2 à 3 ml pour 1 litre d'eau, pulvériser chaque semaine
+• **Alternative locale :** Cendres de bois mélangées à de l'eau savonneuse
+• **Produit du marché :** Fungicide cuivrique — disponible chez les revendeurs agricoles de Brazzaville et Pointe-Noire
 
-**Problem Level: ${severity}**
-${severity === 'severe' ? '⚠️ **24 घंटे में इलाज जरूरी - देर न करें!**' : '✅ जल्दी पकड़ा है - पूरी तरह ठीक हो जाएगा'}
+**⏱️ Fréquence :** Tous les 7 à 10 jours, surtout en saison des pluies
 
-**भविष्य में बचाव:**
-• Plants के बीच proper जगह रखें
-• ऊपर से पानी न डालें
-• सूखे पत्ते हटाते रहें
-• Disease resistant किस्म लगाएं
+**Gravité : ${severity}**
+${urgent ? '⚠️ **Situation sérieuse — traitez immédiatement pour sauver la récolte**' : '✅ Détecté tôt — guérison complète possible avec traitement régulier'}
 
-**कितने दिन में ठीक होगी:** 2-4 हफ्ते में full recovery
+**🛡️ Prévention future :**
+• Espacez bien vos plants
+• Pratiquez la rotation des cultures chaque saison
+• Choisissez des variétés résistantes
+• Évitez les excès d'arrosage
 
-**Good News:** सही इलाज से 100% ठीक हो जाएगी! आपकी फसल अच्छी होगी! 🌱
+**Délai de guérison estimé :** 2 à 4 semaines avec un traitement régulier 🌱
 
-*अगर बहुत ज्यादा problem है तो कृषि doctor को दिखाएं।*`;
+Courage, votre récolte peut encore être sauvée !`;
   }
 
   private getFallbackFarmingAdvice(query: string): string {
-    return `🌱 **खेती की सलाह**
+    return `🌱 **Conseil agricole — Composte AI**
 
-Namaste farmer bhai! आपका सवाल बहुत अच्छा है: "${query}"
+Bonjour ! Voici ma réponse à votre question : *"${query}"*
 
-**मेरी सलाह:**
-• **मिट्टी की सेहत:** साल में एक बार soil test कराएं, गोबर खाद डालते रहें
-• **पानी की व्यवस्था:** Drip या sprinkler लगाएं - पानी की बचत होगी
-• **फसल की सुरक्षा:** Natural तरीकों से कीड़े भगाएं, जरूरत पर ही spray करें
-• **Market Strategy:** Direct selling करें, value addition से ज्यादा पैसा मिलेगा
-• **Technology:** Weather app use करें, Soil Health Card बनवाएं
+**📌 Conseils pour le Congo Brazzaville :**
 
-**आगे क्या करें:**
-1. अपने area के Krishi Vigyan Kendra (KVK) जाएं
-2. FPO (Farmer Group) में शामिल हों
-3. Government schemes का फायदा उठाएं
-4. Environment friendly खेती करें
+• **Santé du sol :** Faites une analyse de sol au moins une fois par an. Ajoutez régulièrement du compost ou de la fumure organique pour maintenir la fertilité.
 
-**Helpful Numbers और Services:**
-• Kisan Call Center: 1800-180-1551 (24 घंटे free सलाह)
-• Soil Health Card portal online check करें
-• mKisan SMS service के लिए register करें
-• Local कृषि अधिकारी से मिलें
+• **Gestion de l'eau :** En saison sèche, arrosez tôt le matin ou en soirée. En saison des pluies, assurez un bon drainage pour éviter la pourriture des racines.
 
-**Good News:** आप सही direction में जा रहे हैं! Modern techniques से बहुत फायदा होगा! 💪
+• **Protection des cultures :** Privilégiez les méthodes naturelles (neem, rotation, associations de cultures) avant les produits chimiques.
 
-*Technical problems के लिए expert की help जरूर लें।*`;
+• **Commercialisation :** Vendez directement au marché quand possible. Les marchés de Brazzaville (Moungali, Total, Mfilou) et de Pointe-Noire offrent de bons prix pour les produits frais.
+
+**🏛️ Ressources disponibles :**
+• Ministère de l'Agriculture du Congo — conseils et subventions
+• Coopératives agricoles locales — achat groupé d'intrants
+• ANADER — semences certifiées et formations
+
+**💡 Prochaines étapes :**
+1. Consultez le service agricole de votre département
+2. Rejoignez un groupement d'agriculteurs de votre zone
+3. Tenez un carnet de suivi de vos cultures et dépenses
+
+Vous êtes sur la bonne voie — l'agriculture congolaise a un bel avenir ! 💪🌿`;
   }
 
   private getFallbackWeatherAdvice(weather: { temp?: number; humidity?: number }, crops: string[]): string {
-    const temp = weather.temp || 25;
-    const humidity = weather.humidity || 60;
-    
-    return `🌤️ **आज के मौसम की सलाह**
+    const temp = weather.temp || 26;
+    const humidity = weather.humidity || 75;
 
-Namaste farmer bhai! आज का मौसम देखकर ये करें:
+    return `🌤️ **Conseils météo du jour — Composte AI**
 
-**अभी का मौसम:**
-• Temperature: ${temp}°C
-• Humidity: ${humidity}%
-• आपकी फसलें: ${crops.join(', ')}
+**🌡️ Conditions actuelles :**
+• Température : ${temp}°C
+• Humidité : ${humidity}%
+• Vos cultures : ${crops.join(', ')}
 
-**आज के लिए जरूरी काम:**
-${temp > 30 ? '🌡️ **गर्मी Alert:**\n• ज्यादा पानी दें\n• छाया का इंतजाम करें\n• सुबह-शाम का काम करें, दोपहर में आराम करें' : ''}
-${humidity > 80 ? '💧 **नमी Alert:**\n• Fungal disease का खतरा है\n• Plants के बीच हवा आने दें\n• कीड़ों पर नजर रखें' : ''}
-${temp < 15 ? '❄️ **ठंड से बचाव:**\n• पाला से बचाएं\n• पानी देना कम करें\n• नाजुक plants को ढकें' : ''}
+**📋 Actions recommandées aujourd'hui :**
+${temp > 30 ? `🔥 **Chaleur élevée (${temp}°C) :**\n• Arrosez tôt le matin (avant 8h) et en soirée (après 17h)\n• Paillez le sol pour conserver l'humidité\n• Évitez tout travail au champ entre 12h et 15h\n\n` : ''}${humidity > 80 ? `💧 **Humidité très élevée (${humidity}%) :**\n• Risque élevé de maladies fongiques\n• Surveillez l'apparition de taches sur les feuilles\n• Aérez bien vos cultures\n• Prévenez avec un traitement au neem si nécessaire\n\n` : ''}${temp < 22 ? `🌬️ **Température fraîche (${temp}°C) :**\n• Réduisez les arrosages\n• Bon moment pour planter des légumes-feuilles\n• Protégez les jeunes plants sensibles\n\n` : ''}${humidity < 55 ? `☀️ **Air sec (${humidity}%) :**\n• Augmentez la fréquence d'arrosage\n• Paillez le sol pour limiter l'évaporation\n• Vérifiez le flétrissement des feuilles\n\n` : ''}
+**✅ Tâches du jour :**
+• Inspectez vos cultures pour détecter maladies ou ravageurs
+• Vérifiez votre système d'arrosage
+• Planifiez vos travaux aux heures fraîches
+• Consultez les prévisions météo pour les 3 prochains jours
 
-**आज करने वाले काम:**
-• Irrigation system check करें
-• फसल की health देखें
-• ठंडे time में field का काम करें
-• कल के मौसम के लिए तैयारी करें
-
-**बीमारी का खतरा:** ${humidity > 70 ? 'ज्यादा है - preventive spray कर दें' : 'कम है - regular checking करते रहें'}
-
-**Good News:** सही planning से मौसम की हर problem का solution है! आपकी फसल safe रहेगी! 🌾
-
-*Daily weather update देखते रहें better planning के लिए।*`;
+Bonne journée au champ ! 🌾`;
   }
 }
 
-// Export singleton instance
+// Export de l'instance unique
 export const openAIService = new OpenAIService();
