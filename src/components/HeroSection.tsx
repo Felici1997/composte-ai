@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 const HeroSection: React.FC = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Green Gradient Background inspired by uploaded image */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#00FFB7] via-[#10d488] to-[#FFB800] opacity-90" />
+      {/* Green Gradient Background matching Composte AI logo */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#1B4D35] via-[#2d6b4a] to-[#1a3d2b] opacity-95" />
       
       {/* Animated Particles */}
       <div className="absolute inset-0 overflow-hidden">
@@ -32,23 +32,22 @@ const HeroSection: React.FC = () => {
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-xl rounded-full px-4 sm:px-6 py-2 sm:py-3 border border-white/30 mb-4 sm:mb-6">
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
             <span className="font-mono text-xs sm:text-sm font-medium text-white">
-              🌾 AgriTech Visionary Platform
+              🌱 Composte AI — Agriculture Intelligente
             </span>
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
-            Future of 
+            Cultivez mieux avec
             <span className="block sm:inline text-white drop-shadow-lg">
-              Smart Farming
+              {" "}l'Intelligence Artificielle
             </span>
-            <span className="block sm:inline"> is Here</span>
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-gray-800 mb-6 sm:mb-8 max-w-4xl mx-auto leading-relaxed px-2 sm:px-4">
-            Revolutionary AI-powered crop recommendations using 
-            <span className="font-semibold text-gray-900"> real-time data fusion</span>, 
-            predictive analytics, and 
-            <span className="font-semibold text-gray-900"> personalized insights</span>
+            Recommandations de cultures personnalisées grâce à la
+            <span className="font-semibold text-gray-900"> fusion de données en temps réel</span>,
+            l'analyse prédictive et des
+            <span className="font-semibold text-gray-900"> insights agricoles intelligents</span>
           </p>
           
           {/* CTA Buttons */}
@@ -56,14 +55,14 @@ const HeroSection: React.FC = () => {
             <Link to="/soil-analysis" className="w-full sm:w-auto max-w-xs sm:max-w-none">
               <Button className="bg-gray-900 hover:bg-gray-800 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-sm sm:text-base w-full transition-all duration-300 hover:scale-105 shadow-lg">
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                Start Crop Analysis
+                Analyser mon sol
               </Button>
             </Link>
             
             <Link to="/dashboard" className="w-full sm:w-auto max-w-xs sm:max-w-none">
               <Button className="bg-[#FFB800] hover:bg-[#e6a600] text-gray-900 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-sm sm:text-base w-full transition-all duration-300 hover:scale-105 shadow-lg">
                 <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                View Live Demo
+                Voir le tableau de bord
               </Button>
             </Link>
           </div>
