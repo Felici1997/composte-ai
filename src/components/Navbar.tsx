@@ -48,10 +48,11 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-xl">🌾</span>
+            <img src="/composte-logo.jpg" alt="Composte AI" className="w-10 h-10 rounded-full object-cover" />
+            <div className="flex flex-col leading-none">
+              <span className="text-lg font-bold text-foreground">Composte AI</span>
+              <span className="text-xs text-muted-foreground">Agriculture Intelligente</span>
             </div>
-            <span className="text-xl font-bold text-foreground">AgriAI</span>
           </Link>
 
           {/* Desktop Navigation */}
