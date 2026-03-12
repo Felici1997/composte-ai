@@ -34,15 +34,15 @@ const CTAFooter: React.FC = () => {
           
           {/* Main Headline */}
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-display font-bold text-foreground mb-6 sm:mb-8 leading-tight px-4 sm:px-0">
-            Join the
+            Rejoignez la
             <span className="block electric-gradient bg-clip-text text-transparent">
-              Agricultural Revolution
+              Révolution Agricole
             </span>
           </h2>
           
           <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4 sm:px-0">
-            Start your journey with AI-powered farming today. Get personalized crop recommendations, 
-            real-time monitoring, and join a global community of innovative farmers.
+            Commencez votre parcours avec Composte AI. Obtenez des recommandations personnalisées,
+            un suivi en temps réel et rejoignez une communauté d'agriculteurs connectés.
           </p>
           
           {/* CTA Buttons */}
@@ -50,7 +50,7 @@ const CTAFooter: React.FC = () => {
             <Link to="/auth" className="w-full sm:w-auto">
               <button className="btn-holographic group w-full sm:w-auto text-sm sm:text-base">
                 <Zap className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 group-hover:animate-magnetic" />
-                Start Free Trial
+                Commencer gratuitement
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 group-hover:translate-x-1 transition-transform" />
               </button>
             </Link>
@@ -58,7 +58,7 @@ const CTAFooter: React.FC = () => {
             <Link to="/dashboard" className="w-full sm:w-auto">
               <button className="btn-glass group w-full sm:w-auto text-sm sm:text-base">
                 <Users className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-                Schedule Demo Call
+                Voir la démo
               </button>
             </Link>
           </div>
@@ -91,9 +91,12 @@ const CTAFooter: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
             <div className="sm:col-span-2 md:col-span-1">
-              <h3 className="font-display font-bold text-foreground mb-3 sm:mb-4 text-base sm:text-lg">AgriTech Visionary</h3>
+              <div className="flex items-center space-x-3 mb-3 sm:mb-4">
+                <img src="/composte-logo.jpg" alt="Composte AI" className="w-8 h-8 rounded-full object-cover" />
+                <h3 className="font-display font-bold text-foreground text-base sm:text-lg">Composte AI</h3>
+              </div>
               <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
-                Revolutionizing agriculture through AI-powered insights and sustainable farming practices.
+                Agriculture intelligente alimentée par l'IA pour cultiver mieux et durablement.
               </p>
             </div>
             
@@ -130,7 +133,7 @@ const CTAFooter: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row justify-between items-center pt-6 sm:pt-8 border-t border-border/20">
             <div className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-0">
-              © 2024 AgriTech Visionary. All rights reserved.
+              © 2025 Composte AI. Tous droits réservés.
             </div>
             <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
               <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
