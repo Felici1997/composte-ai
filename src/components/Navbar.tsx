@@ -1,29 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import type { User } from '@supabase/supabase-js';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { CompactLanguageToggle } from '@/components/LanguageToggle';
+import { ShoppingCart, Menu, X } from 'lucide-react';
+
+const Logo = ({ light = false }: { light?: boolean }) => (
+  <div className="flex items-center gap-3">
+    <svg width="44" height="44" viewBox="0 0 100 100" fill="none">
+      <rect width="100" height="100" rx="24" fill="#064e3b"/>
+      <path d="M30 50C30 38.9543 38.9543 30 50 30C61.0457 30 70 38.9543 70 50"
+        stroke="white" strokeWidth="10" strokeLinecap="round"/>
+      <circle cx="50" cy="50" r="10" fill="#10b981"/>
+      <path d="M50 50L70 70" stroke="white" strokeWidth="10" strokeLinecap="round"/>
+    </svg>
+    <span
+      className="text-2xl font-bold tracking-tight"
+      style={{
+        fontFamily: "'Poppins', sans-serif",
+        color: light ? 'white' : '#064e3b'
+      }}
+    >
+      Composte
+    </span>
+  </div>
+);
+
+const navLinks = [
+  { path: '/', label: 'Accueil' },
+  { path: '/market', label: 'Marché' },
+  { path: '/recommendations', label: 'Cultures' },
+  { path: '/dashboard', label: 'Tableau de bord' },
+];
 
 const Navbar = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const isHome = location.pathname === '/';
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user ?? null);
-      }
-    );
-
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setUser(session?.user ?? null));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => setUser(session?.user ?? null));
     return () => subscription.unsubscribe();
   }, []);
 
@@ -32,127 +56,125 @@ const Navbar = () => {
     navigate('/');
   };
 
-  const navLinks = [
-    { href: '/', label: t('nav.home'), icon: '🏠' },
-    { href: '/dashboard', label: t('nav.dashboard'), icon: '📊' },
-    { href: '/soil-analysis', label: t('nav.soil'), icon: '🌱' },
-    { href: '/disease-scanner', label: t('nav.disease'), icon: '🔍' },
-    { href: '/ai-assistant', label: t('nav.ai'), icon: '🤖' },
-    { href: '/weather-analytics', label: t('nav.weather'), icon: '🌤️' },
-    { href: '/market', label: t('nav.market'), icon: '📈' },
-  ];
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="bg-card border-b border-earth sticky top-0 z-50 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      style={{ padding: scrolled ? '0.75rem 0' : '1.5rem 0' }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          className={`flex items-center justify-between h-16 px-8 rounded-full transition-all duration-500 ${
+            scrolled
+              ? 'glass shadow-lg'
+              : isHome
+              ? 'bg-transparent'
+              : 'glass shadow-md'
+          }`}
+        >
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <img src="/composte-logo.jpg" alt="Composte AI" className="w-10 h-10 rounded-full object-cover" />
-            <div className="flex flex-col leading-none">
-              <span className="text-lg font-bold text-foreground">Composte AI</span>
-              <span className="text-xs text-muted-foreground">Agriculture Intelligente</span>
-            </div>
+          <Link to="/">
+            <Logo light={!scrolled && isHome} />
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
-            {navLinks.map((link) => (
+          {/* Nav links — desktop */}
+          <div className="hidden lg:flex items-center gap-10">
+            {navLinks.map(({ path, label }) => (
               <Link
-                key={link.href}
-                to={link.href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
-                  location.pathname === link.href
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-earth/20'
-                }`}
+                key={path}
+                to={path}
+                className="relative text-[11px] font-bold uppercase tracking-[0.25em] transition-colors"
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  color: isActive(path)
+                    ? (!scrolled && isHome ? 'white' : '#10b981')
+                    : (!scrolled && isHome ? 'rgba(255,255,255,0.65)' : '#9ca3af'),
+                }}
               >
-                <span>{link.icon}</span>
-                <span>{link.label}</span>
+                {label}
+                {isActive(path) && (
+                  <span
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full"
+                    style={{ background: !scrolled && isHome ? 'white' : '#10b981' }}
+                  />
+                )}
               </Link>
             ))}
           </div>
 
-          {/* Auth Section */}
-          <div className="hidden md:flex items-center space-x-3">
-            <CompactLanguageToggle />
+          {/* CTA + user */}
+          <div className="flex items-center gap-3">
             {user ? (
-              <div className="flex items-center space-x-3">
-                <Link to="/profile">
-                  <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-                    <span>👤</span>
-                    <span>{t('nav.profile')}</span>
-                  </Button>
+              <>
+                <Link
+                  to="/profile"
+                  className="hidden sm:block text-[10px] font-bold uppercase tracking-widest transition-colors"
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                    color: !scrolled && isHome ? 'rgba(255,255,255,0.7)' : '#6b7280',
+                  }}
+                >
+                  {user.email?.split('@')[0]}
                 </Link>
-                <Button onClick={handleSignOut} variant="outline" size="sm">
-                  {t('nav.signout')}
-                </Button>
-              </div>
+                <button
+                  onClick={handleSignOut}
+                  className="btn-argile hidden sm:block"
+                  style={{ padding: '0.6rem 1.4rem', fontSize: '0.65rem' }}
+                >
+                  Déconnexion
+                </button>
+              </>
             ) : (
               <Link to="/auth">
-                <Button className="bg-cta hover:bg-cta/90">
-                  {t('nav.getStarted')}
-                </Button>
+                <button
+                  className="btn-argile"
+                  style={{ padding: '0.6rem 1.6rem', fontSize: '0.65rem' }}
+                >
+                  Connexion
+                </button>
               </Link>
             )}
-          </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-earth/20"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+            {/* Mobile menu toggle */}
+            <button
+              className="lg:hidden p-2 rounded-full transition"
+              style={{ color: !scrolled && isHome ? 'white' : '#064e3b' }}
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-earth">
-            <div className="space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-3 ${
-                    location.pathname === link.href
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-earth/20'
-                  }`}
-                >
-                  <span className="text-lg">{link.icon}</span>
-                  <span>{link.label}</span>
-                </Link>
-              ))}
-              
-              <div className="pt-4 border-t border-earth mt-4 space-y-3">
-                <div className="flex justify-center">
-                  <CompactLanguageToggle />
-                </div>
-                {user ? (
-                  <div className="space-y-2">
-                    <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
-                      <Button variant="ghost" className="w-full justify-start">
-                        <span className="mr-3">👤</span>
-                        {t('nav.profile')}
-                      </Button>
-                    </Link>
-                    <Button onClick={handleSignOut} variant="outline" className="w-full">
-                      {t('nav.signout')}
-                    </Button>
-                  </div>
-                ) : (
-                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                    <Button className="w-full bg-cta hover:bg-cta/90">
-                      {t('nav.getStarted')}
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </div>
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div
+            className="lg:hidden mt-3 rounded-3xl p-6 shadow-xl"
+            style={{ background: '#f9f6f0', border: '1px solid rgba(163,138,94,0.15)' }}
+          >
+            {navLinks.map(({ path, label }) => (
+              <Link
+                key={path}
+                to={path}
+                onClick={() => setMenuOpen(false)}
+                className="block py-3 text-[11px] font-bold uppercase tracking-[0.25em] border-b last:border-0"
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  color: isActive(path) ? '#064e3b' : '#9ca3af',
+                  borderColor: 'rgba(163,138,94,0.1)',
+                }}
+              >
+                {label}
+              </Link>
+            ))}
+            {!user && (
+              <Link to="/auth" onClick={() => setMenuOpen(false)}>
+                <button className="btn-argile w-full mt-4" style={{ fontSize: '0.65rem' }}>
+                  Connexion
+                </button>
+              </Link>
+            )}
           </div>
         )}
       </div>
