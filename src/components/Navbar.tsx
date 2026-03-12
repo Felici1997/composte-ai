@@ -25,10 +25,13 @@ const Logo = ({ light = false }: { light?: boolean }) => (
 );
 
 const navLinks = [
-  { path: '/', label: 'Accueil' },
-  { path: '/market', label: 'Marché' },
-  { path: '/recommendations', label: 'Cultures' },
-  { path: '/dashboard', label: 'Tableau de bord' },
+  { path: '/',                label: '🏠 Home' },
+  { path: '/dashboard',       label: '📊 Dashboard' },
+  { path: '/soil-analysis',   label: '🌱 Sol' },
+  { path: '/disease-scanner', label: '🔍 Maladies' },
+  { path: '/ai-assistant',    label: '🤖 IA' },
+  { path: '/weather',         label: '🌤️ Météo' },
+  { path: '/market',          label: '📈 Marché' },
 ];
 
 const Navbar = () => {
@@ -79,7 +82,7 @@ const Navbar = () => {
           </Link>
 
           {/* Nav links — desktop */}
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-5">
             {navLinks.map(({ path, label }) => (
               <Link
                 key={path}
