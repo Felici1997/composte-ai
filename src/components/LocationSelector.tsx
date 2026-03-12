@@ -48,241 +48,241 @@ interface FarmingAreaData extends LocationData {
   specialFeatures: string[];
 }
 
-// Comprehensive farming locations with detailed agricultural data
+// Localités agricoles du Congo Brazzaville avec données détaillées
 const popularLocations: FarmingAreaData[] = [
   {
-    name: 'Pune',
-    state: 'Maharashtra',
-    coordinates: { lat: 18.5204, lon: 73.8567 },
+    name: 'Brazzaville',
+    state: 'Pool',
+    coordinates: { lat: -4.2634, lon: 15.2429 },
     popular: true,
-    primaryCrops: ['Sugarcane', 'Cotton', 'Wheat', 'Soybean', 'Onion'],
-    soilTypes: ['black', 'red', 'loamy'],
-    averageRainfall: 650,
-    bestSeasons: ['kharif', 'rabi'],
-    irrigationAvailability: 'Good - Canal & Bore wells',
-    marketAccess: 'Excellent - APMC, Export hubs',
-    agriInfrastructure: 'Advanced - Cold storage, Processing units',
-    specialFeatures: ['IT-enabled farming', 'Organic farming initiatives', 'Cooperative societies']
+    primaryCrops: ['Manioc', 'Maïs', 'Banane plantain', 'Légumes', 'Arachides'],
+    soilTypes: ['sablo-argileux', 'latéritique', 'alluvionnaire'],
+    averageRainfall: 1450,
+    bestSeasons: ['Grande saison des pluies (oct-déc)', 'Petite saison des pluies (mars-mai)'],
+    irrigationAvailability: 'Bonne — Fleuve Congo, maraîchage périurbain',
+    marketAccess: 'Excellent — Marchés centraux, export régional',
+    agriInfrastructure: 'Avancée — Marchés, chambres froides, transport',
+    specialFeatures: ['Maraîchage intensif', 'Agriculture périurbaine', 'Débouchés commerciaux']
   },
   {
-    name: 'Ludhiana',
-    state: 'Punjab',
-    coordinates: { lat: 30.9010, lon: 75.8573 },
+    name: 'Pointe-Noire',
+    state: 'Kouilou',
+    coordinates: { lat: -4.7762, lon: 11.8636 },
     popular: true,
-    primaryCrops: ['Wheat', 'Rice', 'Maize', 'Cotton', 'Sugarcane'],
-    soilTypes: ['alluvial', 'loamy'],
-    averageRainfall: 750,
-    bestSeasons: ['rabi', 'kharif'],
-    irrigationAvailability: 'Excellent - Canal system',
-    marketAccess: 'Very Good - Grain markets, MSP centers',
-    agriInfrastructure: 'Excellent - Mechanized farming, Storage',
-    specialFeatures: ['Green Revolution hub', 'High mechanization', 'Research centers']
-  },
-  {
-    name: 'Indore',
-    state: 'Madhya Pradesh',
-    coordinates: { lat: 22.7196, lon: 75.8577 },
-    popular: true,
-    primaryCrops: ['Soybean', 'Wheat', 'Cotton', 'Chilli', 'Onion'],
-    soilTypes: ['black', 'mixed'],
-    averageRainfall: 950,
-    bestSeasons: ['kharif', 'rabi'],
-    irrigationAvailability: 'Moderate - Tube wells',
-    marketAccess: 'Good - Commercial center, APMC',
-    agriInfrastructure: 'Good - Processing units, Transport',
-    specialFeatures: ['Soybean capital', 'Contract farming', 'Agri-exports']
-  },
-  {
-    name: 'Nagpur',
-    state: 'Maharashtra',
-    coordinates: { lat: 21.1458, lon: 79.0882 },
-    popular: true,
-    primaryCrops: ['Cotton', 'Orange', 'Soybean', 'Wheat', 'Gram'],
-    soilTypes: ['black', 'red'],
+    primaryCrops: ['Manioc', 'Banane', 'Légumes', 'Ananas', 'Poisson (pêche)'],
+    soilTypes: ['sableux', 'sablo-limoneux', 'côtier'],
     averageRainfall: 1200,
-    bestSeasons: ['kharif', 'rabi'],
-    irrigationAvailability: 'Moderate - Tank irrigation',
-    marketAccess: 'Good - Central location, Rail connectivity',
-    agriInfrastructure: 'Good - Orange processing, Cotton ginning',
-    specialFeatures: ['Orange cultivation', 'Cotton belt', 'Organic farming']
+    bestSeasons: ['Saison des pluies (oct-mai)', 'Petite saison sèche (jan-fév)'],
+    irrigationAvailability: 'Modérée — Cours d\'eau locaux',
+    marketAccess: 'Excellent — Port, marché urbain, export',
+    agriInfrastructure: 'Bonne — Port commercial, marchés, réseau routier',
+    specialFeatures: ['Pêche artisanale', 'Agriculture côtière', 'Débouchés portuaires']
   },
   {
-    name: 'Coimbatore',
-    state: 'Tamil Nadu',
-    coordinates: { lat: 11.0168, lon: 76.9558 },
+    name: 'Dolisie',
+    state: 'Niari',
+    coordinates: { lat: -4.1981, lon: 12.6714 },
     popular: true,
-    primaryCrops: ['Cotton', 'Maize', 'Sugarcane', 'Coconut', 'Turmeric'],
-    soilTypes: ['red', 'black', 'alluvial'],
-    averageRainfall: 600,
-    bestSeasons: ['kharif', 'summer'],
-    irrigationAvailability: 'Good - River & bore wells',
-    marketAccess: 'Excellent - Textile hub, Export facilities',
-    agriInfrastructure: 'Very Good - Textile mills, Agri-tech',
-    specialFeatures: ['Textile capital', 'Drip irrigation', 'Value-added agriculture']
+    primaryCrops: ['Manioc', 'Maïs', 'Arachides', 'Café', 'Palmier à huile'],
+    soilTypes: ['argileux', 'latéritique', 'ferralitique'],
+    averageRainfall: 1600,
+    bestSeasons: ['Grande saison des pluies (oct-déc)', 'Petite saison (mars-mai)'],
+    irrigationAvailability: 'Bonne — Rivière Niari',
+    marketAccess: 'Bonne — Carrefour routier, marché régional',
+    agriInfrastructure: 'Bonne — Chemin de fer CFCO, stockage',
+    specialFeatures: ['Zone sucrière (SARIS)', 'Agriculture vivrière', 'Axe Brazzaville-Pointe-Noire']
   },
   {
-    name: 'Jaipur',
-    state: 'Rajasthan',
-    coordinates: { lat: 26.9124, lon: 75.7873 },
+    name: 'Owando',
+    state: 'Cuvette',
+    coordinates: { lat: -0.4833, lon: 15.9000 },
     popular: true,
-    primaryCrops: ['Bajra', 'Wheat', 'Mustard', 'Gram', 'Barley'],
-    soilTypes: ['sandy', 'loamy'],
-    averageRainfall: 550,
-    bestSeasons: ['rabi', 'zaid'],
-    irrigationAvailability: 'Limited - Tube wells, Canals',
-    marketAccess: 'Good - State capital, Road connectivity',
-    agriInfrastructure: 'Moderate - Storage, Rural markets',
-    specialFeatures: ['Drought-resistant crops', 'Water conservation', 'Desert agriculture']
+    primaryCrops: ['Manioc', 'Banane', 'Maïs', 'Riz', 'Igname'],
+    soilTypes: ['hydromorphe', 'alluvionnaire', 'argilo-sableux'],
+    averageRainfall: 1800,
+    bestSeasons: ['Saison des pluies (mars-nov)', 'Courte saison sèche (juil-août)'],
+    irrigationAvailability: 'Très bonne — Rivière Likouala-Mossaka',
+    marketAccess: 'Modérée — Route nationale, marché local',
+    agriInfrastructure: 'En développement — Stockage, pistes rurales',
+    specialFeatures: ['Zone forestière humide', 'Pêche fluviale', 'Agriculture de subsistance']
   },
   {
-    name: 'Hyderabad',
-    state: 'Telangana',
-    coordinates: { lat: 17.3850, lon: 78.4867 },
+    name: 'Ouesso',
+    state: 'Sangha',
+    coordinates: { lat: 1.6136, lon: 16.0483 },
     popular: true,
-    primaryCrops: ['Rice', 'Cotton', 'Maize', 'Sugarcane', 'Chilli'],
-    soilTypes: ['red', 'black'],
-    averageRainfall: 800,
-    bestSeasons: ['kharif', 'rabi'],
-    irrigationAvailability: 'Good - Major irrigation projects',
-    marketAccess: 'Excellent - IT hub, International airport',
-    agriInfrastructure: 'Very Good - Modern facilities, Research',
-    specialFeatures: ['Tech-enabled farming', 'Seed hub', 'Biotechnology research']
+    primaryCrops: ['Manioc', 'Plantain', 'Cacao', 'Café', 'Igname'],
+    soilTypes: ['ferralitique', 'argileux', 'forestier'],
+    averageRainfall: 1700,
+    bestSeasons: ['Grande saison des pluies (août-nov)', 'Petite saison (mars-juin)'],
+    irrigationAvailability: 'Excellente — Rivière Sangha, forêt équatoriale',
+    marketAccess: 'Limitée — Enclavement partiel, voie fluviale',
+    agriInfrastructure: 'Limitée — Pistes rurales, marchés villageois',
+    specialFeatures: ['Zone forestière', 'Agriculture sur brûlis', 'Produits forestiers non ligneux']
   },
   {
-    name: 'Ahmedabad',
-    state: 'Gujarat',
-    coordinates: { lat: 23.0225, lon: 72.5714 },
+    name: 'Impfondo',
+    state: 'Likouala',
+    coordinates: { lat: 1.6167, lon: 18.0667 },
     popular: true,
-    primaryCrops: ['Cotton', 'Groundnut', 'Wheat', 'Castor', 'Fennel'],
-    soilTypes: ['alluvial', 'black'],
-    averageRainfall: 850,
-    bestSeasons: ['kharif', 'rabi'],
-    irrigationAvailability: 'Very Good - Narmada canal',
-    marketAccess: 'Excellent - Commercial capital, Ports',
-    agriInfrastructure: 'Excellent - Cooperative model, Processing',
-    specialFeatures: ['Cooperative success', 'Cash crops', 'Export-oriented']
+    primaryCrops: ['Manioc', 'Banane plantain', 'Maïs', 'Riz', 'Légumes'],
+    soilTypes: ['hydromorphe', 'alluvionnaire', 'tourbeux'],
+    averageRainfall: 1750,
+    bestSeasons: ['Saison des pluies (mars-nov)'],
+    irrigationAvailability: 'Très bonne — Fleuve Ubangi, zones marécageuses',
+    marketAccess: 'Faible — Zone enclavée, transport fluvial',
+    agriInfrastructure: 'Basique — Pirogue, marchés locaux',
+    specialFeatures: ['Zone humide', 'Pêche fluviale active', 'Agriculture de subsistance']
   },
   {
-    name: 'Patna',
-    state: 'Bihar',
-    coordinates: { lat: 25.5941, lon: 85.1376 },
+    name: 'Madingou',
+    state: 'Bouenza',
+    coordinates: { lat: -4.1538, lon: 13.5497 },
     popular: true,
-    primaryCrops: ['Rice', 'Wheat', 'Maize', 'Sugarcane', 'Potato'],
-    soilTypes: ['alluvial', 'clay'],
-    averageRainfall: 1100,
-    bestSeasons: ['kharif', 'rabi'],
-    irrigationAvailability: 'Good - River systems, Tube wells',
-    marketAccess: 'Moderate - River transport, Rail',
-    agriInfrastructure: 'Developing - Storage facilities',
-    specialFeatures: ['Fertile alluvial soil', 'Multiple cropping', 'River valley agriculture']
+    primaryCrops: ['Canne à sucre', 'Manioc', 'Maïs', 'Arachides', 'Légumes'],
+    soilTypes: ['argileux', 'ferralitique', 'noir volcanique'],
+    averageRainfall: 1400,
+    bestSeasons: ['Grande saison des pluies (oct-déc)', 'Petite saison (mars-mai)'],
+    irrigationAvailability: 'Bonne — Fleuve Bouenza',
+    marketAccess: 'Bonne — Axe routier, marché régional Bouenza',
+    agriInfrastructure: 'Bonne — SARIS Congo, sucrerie industrielle',
+    specialFeatures: ['Agro-industrie sucrière', 'Zone fertile Bouenza', 'Cultures industrielles']
   },
   {
-    name: 'Bhopal',
-    state: 'Madhya Pradesh',
-    coordinates: { lat: 23.2599, lon: 77.4126 },
+    name: 'Kinkala',
+    state: 'Pool',
+    coordinates: { lat: -4.3600, lon: 14.7600 },
     popular: true,
-    primaryCrops: ['Soybean', 'Wheat', 'Gram', 'Mustard', 'Pea'],
-    soilTypes: ['black', 'mixed'],
-    averageRainfall: 1150,
-    bestSeasons: ['kharif', 'rabi'],
-    irrigationAvailability: 'Moderate - Tanks, Tube wells',
-    marketAccess: 'Good - State capital, Central location',
-    agriInfrastructure: 'Good - Government support, Research',
-    specialFeatures: ['Government schemes', 'Mixed farming', 'Pulse production']
+    primaryCrops: ['Manioc', 'Maïs', 'Arachides', 'Légumes', 'Banane'],
+    soilTypes: ['sablo-argileux', 'latéritique'],
+    averageRainfall: 1350,
+    bestSeasons: ['Grande saison (oct-déc)', 'Petite saison (mars-mai)'],
+    irrigationAvailability: 'Modérée — Cours d\'eau saisonniers',
+    marketAccess: 'Bonne — Proximité Brazzaville, RN1',
+    agriInfrastructure: 'Modérée — Pistes rurales, marchés',
+    specialFeatures: ['Ceinture maraîchère Brazzaville', 'Agriculture vivrière', 'Approvisionnement capitale']
+  },
+  {
+    name: 'Sibiti',
+    state: 'Lékoumou',
+    coordinates: { lat: -3.6833, lon: 13.3500 },
+    popular: true,
+    primaryCrops: ['Café', 'Cacao', 'Manioc', 'Plantain', 'Cola'],
+    soilTypes: ['ferralitique', 'argileux rouge', 'forestier'],
+    averageRainfall: 1600,
+    bestSeasons: ['Grande saison des pluies (oct-déc)', 'Petite saison (mars-mai)'],
+    irrigationAvailability: 'Bonne — Rivière Lékoumou',
+    marketAccess: 'Modérée — Route secondaire, marché local',
+    agriInfrastructure: 'Modérée — Stockage café/cacao, pistes',
+    specialFeatures: ['Zone caféière et cacaoyère', 'Produits de rente', 'Forêt dense']
+  },
+  {
+    name: 'Gamboma',
+    state: 'Plateaux',
+    coordinates: { lat: -1.8833, lon: 15.8667 },
+    popular: true,
+    primaryCrops: ['Manioc', 'Maïs', 'Arachides', 'Riz', 'Igname'],
+    soilTypes: ['latéritique', 'sablo-argileux', 'plateau'],
+    averageRainfall: 1500,
+    bestSeasons: ['Saison des pluies (mars-nov)', 'Courte saison sèche (juil)'],
+    irrigationAvailability: 'Modérée — Rivières saisonnières',
+    marketAccess: 'Modérée — Route nationale, marché local',
+    agriInfrastructure: 'En développement — Pistes rurales',
+    specialFeatures: ['Zone des Plateaux', 'Agriculture pluviale', 'Élevage bovin']
   }
 ];
 
-// Major states with comprehensive agricultural information
+// Départements du Congo Brazzaville avec profil agricole
 const majorStates = [
   { 
-    name: 'Punjab', 
-    code: 'PB', 
-    crops: 'Wheat, Rice, Cotton, Maize', 
-    soilType: 'Alluvial', 
-    rainfall: '600-750mm',
-    irrigation: 'Excellent',
-    speciality: 'Food grain production'
+    name: 'Pool', 
+    code: 'PL', 
+    crops: 'Manioc, Maïs, Légumes', 
+    soilType: 'Sablo-argileux', 
+    rainfall: '1350-1500mm',
+    irrigation: 'Bonne',
+    speciality: 'Ceinture maraîchère Brazzaville'
   },
   { 
-    name: 'Haryana', 
-    code: 'HR', 
-    crops: 'Wheat, Rice, Cotton, Sugarcane', 
-    soilType: 'Alluvial', 
-    rainfall: '550-650mm',
-    irrigation: 'Very Good',
-    speciality: 'Green Revolution state'
+    name: 'Bouenza', 
+    code: 'BZ', 
+    crops: 'Canne à sucre, Manioc, Maïs', 
+    soilType: 'Argileux ferralitique', 
+    rainfall: '1400-1600mm',
+    irrigation: 'Très bonne',
+    speciality: 'Agro-industrie sucrière'
   },
   { 
-    name: 'Uttar Pradesh', 
-    code: 'UP', 
-    crops: 'Sugarcane, Wheat, Rice, Potato', 
-    soilType: 'Alluvial', 
-    rainfall: '1000-1200mm',
-    irrigation: 'Good',
-    speciality: 'Largest agricultural state'
+    name: 'Niari', 
+    code: 'NI', 
+    crops: 'Manioc, Café, Palmier à huile', 
+    soilType: 'Latéritique, argileux', 
+    rainfall: '1400-1800mm',
+    irrigation: 'Bonne',
+    speciality: 'Zone de savane fertile'
   },
   { 
-    name: 'Maharashtra', 
-    code: 'MH', 
-    crops: 'Cotton, Sugarcane, Soybean, Onion', 
-    soilType: 'Black, Red', 
-    rainfall: '600-1200mm',
-    irrigation: 'Moderate',
-    speciality: 'Cash crop leader'
+    name: 'Cuvette', 
+    code: 'CV', 
+    crops: 'Manioc, Riz, Banane, Igname', 
+    soilType: 'Alluvionnaire, hydromorphe', 
+    rainfall: '1700-2000mm',
+    irrigation: 'Excellente',
+    speciality: 'Agriculture fluviale'
   },
   { 
-    name: 'Karnataka', 
-    code: 'KA', 
-    crops: 'Coffee, Rice, Cotton, Sugarcane', 
-    soilType: 'Red, Black', 
-    rainfall: '500-1400mm',
-    irrigation: 'Good',
-    speciality: 'Coffee & spice production'
+    name: 'Sangha', 
+    code: 'SG', 
+    crops: 'Cacao, Café, Plantain', 
+    soilType: 'Ferralitique forestier', 
+    rainfall: '1600-1800mm',
+    irrigation: 'Excellente',
+    speciality: 'Zone forestière équatoriale'
   },
   { 
-    name: 'Andhra Pradesh', 
-    code: 'AP', 
-    crops: 'Rice, Cotton, Groundnut, Chilli', 
-    soilType: 'Red, Black', 
-    rainfall: '900-1100mm',
-    irrigation: 'Good',
-    speciality: 'Spice & aquaculture hub'
+    name: 'Likouala', 
+    code: 'LK', 
+    crops: 'Manioc, Riz, Banane, Poisson', 
+    soilType: 'Hydromorphe, tourbeux', 
+    rainfall: '1700-2000mm',
+    irrigation: 'Très bonne',
+    speciality: 'Zones humides et pêche'
   },
   { 
-    name: 'Tamil Nadu', 
-    code: 'TN', 
-    crops: 'Rice, Sugarcane, Cotton, Groundnut', 
-    soilType: 'Red, Black, Alluvial', 
-    rainfall: '900-1200mm',
-    irrigation: 'Good',
-    speciality: 'Delta agriculture'
+    name: 'Plateaux', 
+    code: 'PT', 
+    crops: 'Manioc, Arachides, Maïs, Élevage', 
+    soilType: 'Latéritique de plateau', 
+    rainfall: '1500-1700mm',
+    irrigation: 'Modérée',
+    speciality: 'Élevage bovin et cultures vivrières'
   },
   { 
-    name: 'Gujarat', 
-    code: 'GJ', 
-    crops: 'Cotton, Groundnut, Wheat, Castor', 
-    soilType: 'Alluvial, Black', 
-    rainfall: '500-1000mm',
-    irrigation: 'Excellent',
-    speciality: 'Cooperative model success'
+    name: 'Lékoumou', 
+    code: 'LK', 
+    crops: 'Café, Cacao, Manioc, Cola', 
+    soilType: 'Ferralitique rouge', 
+    rainfall: '1500-1700mm',
+    irrigation: 'Bonne',
+    speciality: 'Cultures de rente (café, cacao)'
   },
   { 
-    name: 'Rajasthan', 
-    code: 'RJ', 
-    crops: 'Bajra, Wheat, Mustard, Gram', 
-    soilType: 'Sandy, Desert', 
-    rainfall: '100-700mm',
-    irrigation: 'Limited',
-    speciality: 'Desert agriculture'
+    name: 'Kouilou', 
+    code: 'KO', 
+    crops: 'Manioc, Banane, Légumes, Pêche', 
+    soilType: 'Sableux côtier', 
+    rainfall: '1200-1400mm',
+    irrigation: 'Modérée',
+    speciality: 'Agriculture côtière et pêche'
   },
   { 
-    name: 'Madhya Pradesh', 
-    code: 'MP', 
-    crops: 'Soybean, Wheat, Cotton, Gram', 
-    soilType: 'Black, Mixed', 
-    rainfall: '800-1400mm',
-    irrigation: 'Moderate',
-    speciality: 'Soybean bowl of India'
+    name: 'Cuvette-Ouest', 
+    code: 'CO', 
+    crops: 'Manioc, Maïs, Cacao, Igname', 
+    soilType: 'Ferralitique, argileux', 
+    rainfall: '1600-1900mm',
+    irrigation: 'Bonne',
+    speciality: 'Zone forestière et agriculture vivrière'
   }
 ];
 
@@ -307,7 +307,6 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(false);
 
-  // Get farming data for a specific location
   const getFarmingDataForLocation = (locationName: string): FarmingAreaData | null => {
     return popularLocations.find(loc => 
       loc.name.toLowerCase().includes(locationName.toLowerCase()) ||
@@ -315,7 +314,6 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
     ) || null;
   };
 
-  // Filter locations based on search query
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredLocations(popularLocations);
@@ -329,7 +327,6 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
     }
   }, [searchQuery]);
 
-  // Update farming data when location changes
   useEffect(() => {
     if (selectedLocation && onFarmingDataUpdate) {
       const farmingData = getFarmingDataForLocation(selectedLocation);
@@ -337,63 +334,47 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
     }
   }, [selectedLocation, onFarmingDataUpdate]);
 
-  // Get user's current location
   const getCurrentLocation = () => {
     setIsGettingLocation(true);
-    
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by this browser.');
+      alert('La géolocalisation n\'est pas supportée par ce navigateur.');
       setIsGettingLocation(false);
       return;
     }
-
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        
         try {
-          // Reverse geocoding to get location name
           const response = await fetch(
             `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}`
           );
-          
           if (response.ok) {
             const data = await response.json();
             if (data.length > 0) {
               const locationName = `${data[0].name}, ${data[0].state || data[0].country}`;
               onLocationChange(locationName, { lat: latitude, lon: longitude });
-              
-              if (showWeather) {
-                fetchWeather(latitude, longitude);
-              }
+              if (showWeather) fetchWeather(latitude, longitude);
             }
           }
         } catch (error) {
-          console.error('Error getting location details:', error);
-          onLocationChange(`Location (${latitude.toFixed(2)}, ${longitude.toFixed(2)})`, 
-            { lat: latitude, lon: longitude });
+          onLocationChange(`Position (${latitude.toFixed(2)}, ${longitude.toFixed(2)})`, { lat: latitude, lon: longitude });
         }
-        
         setIsGettingLocation(false);
       },
       (error) => {
-        console.error('Error getting location:', error);
-        alert('Unable to get your location. Please select manually.');
+        alert('Impossible d\'obtenir votre position. Veuillez sélectionner manuellement.');
         setIsGettingLocation(false);
       }
     );
   };
 
-  // Fetch weather data
   const fetchWeather = async (lat: number, lon: number) => {
     if (!showWeather) return;
-    
     setWeatherLoading(true);
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}&units=metric`
       );
-      
       if (response.ok) {
         const data = await response.json();
         const weatherData: WeatherData = {
@@ -406,12 +387,11 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
           pressure: data.main.pressure,
           feelsLike: Math.round(data.main.feels_like)
         };
-        
         setWeather(weatherData);
         onWeatherUpdate?.(weatherData);
       }
     } catch (error) {
-      console.error('Error fetching weather:', error);
+      console.error('Erreur météo:', error);
     } finally {
       setWeatherLoading(false);
     }
@@ -419,72 +399,43 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
 
   const handleLocationSelect = (location: FarmingAreaData) => {
     try {
-      if (!location) {
-        console.warn('Invalid location selection:', location);
-        return;
-      }
-      
-      if (!location.name || !location.state) {
-        console.warn('Location missing required fields:', location);
-        return;
-      }
-      
-      if (!location.coordinates || typeof location.coordinates.lat !== 'number' || typeof location.coordinates.lon !== 'number') {
-        console.warn('Location missing valid coordinates:', location);
+      if (!location?.name || !location?.state) return;
+      if (!location.coordinates || typeof location.coordinates.lat !== 'number') {
         onLocationChange(`${location.name}, ${location.state}`, undefined, location);
         return;
       }
-      
       onLocationChange(`${location.name}, ${location.state}`, location.coordinates, location);
-      if (showWeather) {
-        fetchWeather(location.coordinates.lat, location.coordinates.lon);
-      }
+      if (showWeather) fetchWeather(location.coordinates.lat, location.coordinates.lon);
     } catch (error) {
-      console.error('Error in location selection:', error);
+      console.error('Erreur sélection localité:', error);
     }
   };
 
   const handleManualSearch = () => {
-    try {
-      if (!searchQuery.trim()) {
-        console.warn('Empty search query');
-        return;
-      }
-      
-      if (searchQuery.trim().length < 2) {
-        console.warn('Search query too short:', searchQuery);
-        return;
-      }
-      
-      const farmingData = getFarmingDataForLocation(searchQuery.trim());
-      onLocationChange(searchQuery.trim(), undefined, farmingData);
-    } catch (error) {
-      console.error('Error in manual search:', error);
-    }
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) return;
+    const farmingData = getFarmingDataForLocation(searchQuery.trim());
+    onLocationChange(searchQuery.trim(), undefined, farmingData);
   };
 
   return (
     <div className="space-y-6">
-      {/* Location Input Header */}
       <div className="text-center">
         <h3 className="text-xl font-semibold text-foreground mb-2 flex items-center justify-center gap-2">
           <MapPin className="w-6 h-6 text-primary" />
-          Select Location
+          Sélectionner votre localité
         </h3>
         <p className="text-muted-foreground">
-          Select your location for accurate weather information
+          Choisissez votre ville ou localité au Congo Brazzaville
         </p>
       </div>
 
-      {/* Location Search */}
       <Card className="earth-card p-6">
         <div className="space-y-4">
-          {/* Search Input */}
           <div className="flex gap-3">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Search city name..."
+                placeholder="Rechercher une ville, département ou culture..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -505,7 +456,6 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
             </Button>
           </div>
 
-          {/* Selected Location Display */}
           {selectedLocation && (
             <div className="flex items-center gap-2 p-3 bg-primary/10 rounded-lg">
               <CheckCircle className="w-5 h-5 text-success" />
@@ -515,10 +465,9 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
         </div>
       </Card>
 
-      {/* Popular Locations */}
       <Card className="earth-card p-6">
         <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-          🌟 Popular Farming Areas
+          🌟 Principales zones agricoles du Congo
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {filteredLocations.map((location, index) => (
@@ -536,7 +485,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
                 <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
                 <div className="flex-1">
                   <div className="font-medium text-sm">{location.name}</div>
-                  <div className="text-xs text-muted-foreground">{location.state}</div>
+                  <div className="text-xs text-muted-foreground">Dép. {location.state}</div>
                 </div>
                 {selectedLocation.includes(location.name) && (
                   <CheckCircle className="w-4 h-4 text-success" />
@@ -547,10 +496,9 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
         </div>
       </Card>
 
-      {/* Major Agricultural States */}
       <Card className="earth-card p-6">
         <h4 className="font-semibold text-foreground mb-4">
-          🌾 Major Agricultural States
+          🗺️ Départements du Congo Brazzaville
         </h4>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           {majorStates.map((state, index) => (
@@ -564,83 +512,61 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
         </div>
       </Card>
 
-      {/* Farming Area Details */}
       {selectedLocation && (() => {
         const farmingData = getFarmingDataForLocation(selectedLocation);
         return farmingData ? (
           <Card className="earth-card p-6">
             <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-              🌾 {farmingData.name} - Agricultural Profile
+              🌾 {farmingData.name} — Profil agricole
             </h4>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Primary Crops */}
               <div className="space-y-3">
                 <h5 className="font-medium text-foreground flex items-center gap-2">
-                  <span className="text-lg">🌱</span>
-                  Primary Crops
+                  <span className="text-lg">🌱</span> Cultures principales
                 </h5>
                 <div className="flex flex-wrap gap-2">
                   {farmingData.primaryCrops.map((crop, idx) => (
-                    <Badge key={idx} variant="secondary" className="text-xs">
-                      {crop}
-                    </Badge>
+                    <Badge key={idx} variant="secondary" className="text-xs">{crop}</Badge>
                   ))}
                 </div>
               </div>
-
-              {/* Soil Types */}
               <div className="space-y-3">
                 <h5 className="font-medium text-foreground flex items-center gap-2">
-                  <span className="text-lg">🟤</span>
-                  Soil Types
+                  <span className="text-lg">🟤</span> Types de sol
                 </h5>
                 <div className="flex flex-wrap gap-2">
                   {farmingData.soilTypes.map((soil, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs capitalize">
-                      {soil}
-                    </Badge>
+                    <Badge key={idx} variant="outline" className="text-xs capitalize">{soil}</Badge>
                   ))}
                 </div>
               </div>
-
-              {/* Climate Info */}
               <div className="space-y-3">
                 <h5 className="font-medium text-foreground flex items-center gap-2">
-                  <Droplets className="w-4 h-4" />
-                  Climate Data
+                  <Droplets className="w-4 h-4" /> Données climatiques
                 </h5>
                 <div className="text-sm text-muted-foreground space-y-1">
-                  <div>Rainfall: {farmingData.averageRainfall}mm annually</div>
-                  <div>Best Seasons: {farmingData.bestSeasons.join(', ')}</div>
+                  <div>Pluviométrie : {farmingData.averageRainfall}mm/an</div>
+                  <div>Meilleures saisons : {farmingData.bestSeasons.join(' / ')}</div>
                 </div>
               </div>
-
-              {/* Infrastructure */}
               <div className="space-y-3">
                 <h5 className="font-medium text-foreground flex items-center gap-2">
-                  <span className="text-lg">🏗️</span>
-                  Infrastructure
+                  <span className="text-lg">🏗️</span> Infrastructure
                 </h5>
                 <div className="text-sm text-muted-foreground space-y-1">
-                  <div><strong>Irrigation:</strong> {farmingData.irrigationAvailability}</div>
-                  <div><strong>Market:</strong> {farmingData.marketAccess}</div>
-                  <div><strong>Facilities:</strong> {farmingData.agriInfrastructure}</div>
+                  <div><strong>Irrigation :</strong> {farmingData.irrigationAvailability}</div>
+                  <div><strong>Marché :</strong> {farmingData.marketAccess}</div>
+                  <div><strong>Équipements :</strong> {farmingData.agriInfrastructure}</div>
                 </div>
               </div>
             </div>
-
-            {/* Special Features */}
             <div className="mt-4 space-y-3">
               <h5 className="font-medium text-foreground flex items-center gap-2">
-                <span className="text-lg">⭐</span>
-                Special Features
+                <span className="text-lg">⭐</span> Caractéristiques
               </h5>
               <div className="flex flex-wrap gap-2">
                 {farmingData.specialFeatures.map((feature, idx) => (
-                  <Badge key={idx} variant="default" className="text-xs">
-                    {feature}
-                  </Badge>
+                  <Badge key={idx} variant="default" className="text-xs">{feature}</Badge>
                 ))}
               </div>
             </div>
@@ -648,47 +574,41 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
         ) : null;
       })()}
 
-      {/* Weather Information */}
       {showWeather && (weather || weatherLoading) && (
         <Card className="earth-card p-6">
           <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <Cloud className="w-5 h-5 text-primary" />
-            Weather Information
+            Météo locale
           </h4>
-          
           {weatherLoading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <div className="text-muted-foreground">Loading weather data...</div>
+              <div className="text-muted-foreground">Chargement des données météo...</div>
             </div>
           ) : weather ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-card-soft rounded-lg">
                 <Thermometer className="w-6 h-6 text-red-500 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-foreground">{weather.temperature}°C</div>
-                <div className="text-xs text-muted-foreground">Temperature</div>
-                <div className="text-xs text-muted-foreground">Feels like {weather.feelsLike}°C</div>
+                <div className="text-xs text-muted-foreground">Température</div>
+                <div className="text-xs text-muted-foreground">Ressenti {weather.feelsLike}°C</div>
               </div>
-              
               <div className="text-center p-4 bg-card-soft rounded-lg">
                 <Droplets className="w-6 h-6 text-blue-500 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-foreground">{weather.humidity}%</div>
-                <div className="text-xs text-muted-foreground">Humidity</div>
+                <div className="text-xs text-muted-foreground">Humidité</div>
                 <div className="text-xs text-muted-foreground">{weather.description}</div>
               </div>
-
               <div className="text-center p-4 bg-card-soft rounded-lg">
                 <Wind className="w-6 h-6 text-green-500 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-foreground">{weather.windSpeed}</div>
-                <div className="text-xs text-muted-foreground">km/h Wind</div>
+                <div className="text-xs text-muted-foreground">km/h Vent</div>
                 <div className="text-xs text-muted-foreground">{weather.pressure} hPa</div>
               </div>
-
               <div className="text-center p-4 bg-card-soft rounded-lg">
                 <Eye className="w-6 h-6 text-purple-500 mx-auto mb-2" />
                 <div className="text-2xl font-bold text-foreground">{weather.visibility}</div>
-                <div className="text-xs text-muted-foreground">km Visibility</div>
-                <div className="text-xs text-muted-foreground">Clear view</div>
+                <div className="text-xs text-muted-foreground">km Visibilité</div>
               </div>
             </div>
           ) : null}
