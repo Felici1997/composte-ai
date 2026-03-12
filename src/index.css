@@ -2,319 +2,260 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Composte AI Design System - Agriculture Intelligente */
+/* === COMPOSTE AI — Design System inspiré de demoparah.nakeas.com === */
+/* Palette : Forêt #064e3b · Argile #a38a5e · Parchemin #f9f6f0 · Emeraude #10b981 */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 @layer base {
   :root {
-    /* Pearl White Foundation */
-    --background: 0 0% 99.9%;
-    --foreground: 210 11% 15%;
+    /* === Couleurs de marque === */
+    --brand-forest:   #064e3b;   /* vert forêt profond */
+    --brand-forest-dark: #022c22;
+    --brand-mint:     #10b981;   /* emeraude action */
+    --brand-argile:   #a38a5e;   /* or/argile accent */
+    --brand-parchemin:#f9f6f0;   /* fond crème */
+    --brand-stone:    #1c1917;   /* texte foncé */
 
-    /* Glass Card System */
+    /* === Tokens Tailwind / shadcn compatibles === */
+    --background: 43 33% 97%;         /* parchemin */
+    --foreground: 20 6% 10%;          /* stone-900 */
+
     --card: 0 0% 100%;
-    --card-foreground: 210 11% 15%;
-    --card-soft: 160 30% 98%;
-    --card-glass: 0 0% 100% / 0.85;
+    --card-foreground: 20 6% 10%;
+    --card-soft: 43 30% 96%;
 
-    /* Popover Colors */
     --popover: 0 0% 100%;
-    --popover-foreground: 210 11% 15%;
+    --popover-foreground: 20 6% 10%;
 
-    /* Forest Green Primary (#1B4D35 — couleur logo) */
-    --primary: 152 49% 20%;
-    --primary-foreground: 0 0% 99%;
-    --primary-light: 152 40% 40%;
-    --primary-glow: 152 50% 30%;
-    --primary-electric: 152 49% 20%;
+    /* Primary = Emeraude */
+    --primary: 161 61% 40%;           /* #10b981 */
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 161 61% 60%;
+    --primary-glow: 161 61% 50%;
 
-    /* Deep Forest Secondary */
-    --secondary: 152 49% 14%;
-    --secondary-foreground: 0 0% 99%;
-    --secondary-warm: 152 40% 20%;
+    /* Secondary = Forêt */
+    --secondary: 160 80% 17%;         /* #064e3b */
+    --secondary-foreground: 0 0% 100%;
 
-    /* Harvest Gold Accent (#FFB800) */
-    --accent: 45 100% 50%;
-    --accent-foreground: 45 95% 8%;
-    --accent-bright: 45 100% 60%;
-    --accent-warm: 42 95% 55%;
+    /* Accent = Argile/or */
+    --accent: 35 31% 51%;             /* #a38a5e */
+    --accent-foreground: 0 0% 100%;
 
-    /* Premium CTA (Harvest Gold) */
-    --cta: 45 100% 50%;
-    --cta-foreground: 45 95% 8%;
-    --cta-hover: 45 100% 45%;
-    --cta-glow: 45 100% 65%;
+    --muted: 43 20% 92%;
+    --muted-foreground: 20 6% 40%;
 
-    /* Charcoal Muted (#2D3748) */
-    --muted: 210 15% 92%;
-    --muted-foreground: 210 22% 22%;
-    --muted-dark: 210 22% 22%;
-
-    /* Status Colors */
-    --success: 152 49% 30%;
-    --success-foreground: 0 0% 98%;
-    --success-glow: 152 49% 40%;
-    --warning: 45 100% 50%;
-    --warning-foreground: 210 15% 15%;
     --destructive: 0 85% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    /* Border & Input */
-    --border: 152 20% 85%;
-    --input: 152 15% 95%;
-    --ring: 152 49% 20%;
+    --border: 43 20% 85%;
+    --input: 43 20% 92%;
+    --ring: 161 61% 40%;
 
-    /* Futuristic Radius */
-    --radius: 1.25rem;
-    --radius-sm: 0.875rem;
-    --radius-lg: 2rem;
-    --radius-xl: 3rem;
+    --radius: 1rem;
+    --radius-sm: 0.75rem;
+    --radius-lg: 1.5rem;
+    --radius-xl: 2rem;
+    --radius-2xl: 3rem;
+    --radius-pill: 9999px;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(152 49% 20%) 0%, hsl(152 40% 32%) 50%, hsl(45 100% 50%) 100%);
-    --gradient-earth: linear-gradient(180deg, hsl(152 20% 98%) 0%, hsl(152 15% 94%) 100%);
-    --gradient-electric: linear-gradient(90deg, hsl(152 49% 20%) 0%, hsl(152 40% 35%) 100%);
-    --gradient-harvest: linear-gradient(45deg, hsl(45 100% 50%) 0%, hsl(35 90% 55%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.2) 0%, hsl(152 49% 20% / 0.1) 100%);
+    /* === Gradients === */
+    --gradient-hero: linear-gradient(160deg, #022c22 0%, #064e3b 60%, #0a5f47 100%);
+    --gradient-earth: linear-gradient(180deg, #f9f6f0 0%, #f0ede6 100%);
+    --gradient-emerald: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    --gradient-argile: linear-gradient(90deg, #a38a5e 0%, #8c764d 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(249,246,240,0.6) 100%);
 
-    /* Premium Shadows */
-    --shadow-soft: 0 8px 32px -8px hsl(152 49% 20% / 0.15);
-    --shadow-card: 0 16px 48px -12px hsl(160 100% 50% / 0.15);
-    --shadow-glow: 0 0 60px hsl(160 100% 50% / 0.3);
-    --shadow-electric: 0 0 80px hsl(160 100% 50% / 0.4);
-    --shadow-harvest: 0 8px 40px hsl(45 100% 50% / 0.2);
+    /* === Shadows === */
+    --shadow-soft: 0 4px 24px -4px rgba(6,78,59,0.08);
+    --shadow-card: 0 12px 40px -8px rgba(6,78,59,0.12);
+    --shadow-forest: 0 20px 60px -12px rgba(6,78,59,0.25);
+    --shadow-argile: 0 8px 32px -8px rgba(163,138,94,0.3);
 
-    /* Physics-Based Animation */
-    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    --transition-magnetic: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
+    /* Sidebar (inchangé) */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --success: 161 61% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 35 31% 51%;
+    --warning-foreground: 0 0% 100%;
+    --cta: 35 31% 51%;
+    --cta-foreground: 0 0% 100%;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-@layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
-    /* Better font rendering for different languages */
+    @apply bg-background text-foreground;
+    font-family: 'Poppins', sans-serif;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    font-feature-settings: "kern" 1;
+    position: relative;
   }
 
-  /* Enhanced text rendering for English content */
-  .text-optimized {
-    font-weight: 400;
-    line-height: 1.5;
+  /* Grain texture subtile comme le site de référence */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* Better text contrast for readability */
-  .text-enhance {
-    text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+  h1, h2, h3, h4 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 
-  /* Responsive text utilities */
-  .text-responsive {
-    font-size: clamp(0.875rem, 2.5vw, 1rem);
-    line-height: 1.5;
-  }
-
-  .text-responsive-lg {
-    font-size: clamp(1rem, 3vw, 1.25rem);
-    line-height: 1.6;
-  }
-
-  .text-responsive-xl {
-    font-size: clamp(1.25rem, 4vw, 1.875rem);
-    line-height: 1.4;
-  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--brand-parchemin); }
+  ::-webkit-scrollbar-thumb { background: #d6d3cd; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--brand-argile); }
 }
 
 @layer components {
-  /* Neo-Brutalist Glass Cards */
-  .glass-card {
-    @apply bg-card-glass backdrop-blur-xl rounded-xl shadow-card border border-border/20
-           transition-[var(--transition-spring)] hover:shadow-electric
-           hover:-translate-y-2 hover:scale-[1.02];
-  }
-  
-  .brutalist-card {
-    @apply bg-card rounded-2xl shadow-harvest border-2 border-primary/20
-           transition-[var(--transition-magnetic)] hover:shadow-electric
-           hover:border-primary hover:scale-105 hover:rotate-1;
-  }
 
-  /* Futuristic Gradients */
-  .hero-gradient {
-    background: var(--gradient-hero);
-  }
-  
-  .earth-gradient {
-    background: var(--gradient-earth);
-  }
-  
-  .electric-gradient {
-    background: var(--gradient-electric);
-  }
-  
-  .harvest-gradient {
-    background: var(--gradient-harvest);
-  }
-
-  .glass-gradient {
-    background: var(--gradient-glass);
-  }
-
-  .sky-gradient {
-    background: linear-gradient(135deg, hsl(160 30% 98%) 0%, hsl(200 50% 96%) 50%, hsl(160 20% 95%) 100%);
-  }
-
-  .warm-gradient {
-    background: linear-gradient(135deg, hsl(45 40% 98%) 0%, hsl(35 50% 96%) 50%, hsl(160 20% 95%) 100%);
-  }
-
+  /* === CARDS === */
   .earth-card {
-    @apply bg-card-soft backdrop-blur-sm rounded-2xl shadow-soft border border-border/10
-           transition-[var(--transition-spring)] hover:shadow-card
-           hover:bg-card hover:border-border/20;
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: var(--shadow-soft);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .earth-card:hover {
+    box-shadow: var(--shadow-card);
+    transform: translateY(-2px);
   }
 
-  /* Holographic Buttons */
-  .btn-holographic {
-    @apply relative bg-primary text-primary-foreground rounded-xl px-6 py-3 sm:px-8 sm:py-4 font-display font-bold
-           shadow-electric transition-[var(--transition-spring)] overflow-hidden
-           hover:shadow-[0_0_80px_hsl(var(--primary)_/_0.6)] hover:scale-110 
-           active:scale-95 before:absolute before:inset-0 
-           before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent
-           before:translate-x-[-100%] hover:before:translate-x-[200%] 
-           before:transition-transform before:duration-700;
-  }
-  
-  .btn-magnetic {
-    @apply bg-cta text-cta-foreground rounded-2xl px-8 py-4 sm:px-10 sm:py-5 font-display font-bold
-           shadow-harvest transition-[var(--transition-magnetic)] 
-           hover:shadow-[0_0_60px_hsl(var(--cta)_/_0.5)] hover:animate-magnetic
-           hover:scale-110 active:scale-95;
-  }
-  
-  .btn-glass {
-    @apply bg-card-glass backdrop-blur-xl text-foreground rounded-xl px-6 py-3 sm:px-8 sm:py-4 font-medium
-           border border-border/30 shadow-soft transition-[var(--transition-spring)]
-           hover:bg-primary/10 hover:border-primary/50 hover:shadow-glow hover:scale-105;
+  /* Glass navbar */
+  .glass {
+    background: rgba(249, 246, 240, 0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(163, 138, 94, 0.12);
   }
 
-  /* Neo-Brutalist Animations */
+  /* === BOUTONS style Composte === */
+  .btn-forest {
+    background: var(--brand-forest);
+    color: white;
+    border-radius: var(--radius-pill);
+    padding: 1rem 2rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  .btn-forest:hover { background: var(--brand-forest-dark); transform: translateY(-2px); }
+
+  .btn-argile {
+    background: var(--brand-argile);
+    color: white;
+    border-radius: var(--radius-pill);
+    padding: 1rem 2rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  .btn-argile:hover { background: #8c764d; transform: translateY(-2px); }
+
+  .btn-outline-white {
+    background: transparent;
+    color: white;
+    border-radius: var(--radius-pill);
+    padding: 1rem 2rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 2px solid rgba(255,255,255,0.5);
+    transition: all 0.3s ease;
+  }
+  .btn-outline-white:hover { background: white; color: var(--brand-forest); }
+
+  /* === BADGE TAG (style pill argile) === */
+  .badge-argile {
+    display: inline-block;
+    padding: 0.35rem 1rem;
+    border-radius: var(--radius-pill);
+    background: rgba(163,138,94,0.1);
+    border: 1px solid rgba(163,138,94,0.2);
+    color: var(--brand-argile);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  /* Icon box forest */
+  .icon-forest {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: var(--brand-forest);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 8px 24px rgba(6,78,59,0.2);
+  }
+
+  /* === Gradients utilitaires === */
+  .bg-hero { background: var(--gradient-hero); }
+  .bg-parchemin { background: var(--brand-parchemin); }
+  .bg-forest { background: var(--brand-forest); }
+  .bg-forest-dark { background: var(--brand-forest-dark); }
+  .text-forest { color: var(--brand-forest); }
+  .text-argile { color: var(--brand-argile); }
+  .text-mint { color: var(--brand-mint); }
+
+  /* Sky/warm gradients (aliases gardés pour pages existantes) */
+  .sky-gradient { background: var(--brand-parchemin); }
+  .warm-gradient { background: var(--brand-parchemin); }
+
+  /* Card soft alias */
+  .bg-card-soft { background: #f9f6f0; }
+
+  /* === Animations === */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
   .fade-in-up {
-    @apply animate-[fade-in-up_0.8s_ease-out_forwards];
-  }
-  
-  .slide-in-left {
-    @apply animate-[slide-in-left_0.6s_ease-out_forwards];
-  }
-  
-  .bounce-gentle {
-    @apply animate-[bounce-gentle_2s_ease-in-out_infinite];
-  }
-
-  .magnetic-hover {
-    @apply transition-[var(--transition-magnetic)] hover:animate-magnetic;
-  }
-
-  .glow-pulse {
-    @apply animate-pulse-glow;
-  }
-
-  .grow-in {
-    @apply animate-grow;
-  }
-
-  /* Interactive Elements */
-  .hover-glow {
-    @apply transition-[var(--transition-smooth)] hover:shadow-glow;
-  }
-
-  .hover-electric {
-    @apply transition-[var(--transition-magnetic)] hover:shadow-electric hover:scale-105;
-  }
-
-  /* Data Display Components */
-  .metric-card {
-    @apply glass-card p-6 text-center group cursor-pointer;
-  }
-
-  .status-indicator {
-    @apply w-3 h-3 rounded-full animate-pulse-glow;
-  }
-
-  .progress-bar {
-    @apply h-2 rounded-full electric-gradient relative overflow-hidden
-           before:absolute before:inset-0 before:bg-gradient-to-r 
-           before:from-transparent before:via-white/30 before:to-transparent
-           before:translate-x-[-100%] before:animate-[slide-right_2s_ease-in-out_infinite];
+    animation: fadeInUp 0.7s ease-out forwards;
   }
 }
 
-/* Custom animations */
+/* === KEYFRAMES === */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
+  0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes wave {
@@ -322,99 +263,15 @@
   50% { height: 40px; }
 }
 
-@keyframes scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide-in-left {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes bounce-gentle {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
 @keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
-  }
-  50% {
-    box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
-  }
+  0%, 100% { box-shadow: 0 0 20px rgba(16,185,129,0.3); }
+  50%       { box-shadow: 0 0 40px rgba(16,185,129,0.6); }
 }
 
-@keyframes magnetic {
-  0% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.05) rotate(1deg); }
-  50% { transform: scale(1.1) rotate(0deg); }
-  75% { transform: scale(1.05) rotate(-1deg); }
-  100% { transform: scale(1) rotate(0deg); }
-}
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-bounce-gentle { animation: bounceGentle 2s ease-in-out infinite; }
 
-@keyframes grow {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes slide-right {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(200%);
-  }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-bounce-gentle {
-  animation: bounce-gentle 2s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-.animate-magnetic {
-  animation: magnetic 0.6s ease-in-out;
-}
-
-.animate-grow {
-  animation: grow 0.5s ease-out;
-}
-
-.animate-fade-in {
-  animation: fade-in-up 0.8s ease-out;
+@keyframes bounceGentle {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
 }
