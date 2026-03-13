@@ -88,7 +88,19 @@ export default function DiseaseScanner() {
       setResult(analysisResult); setHealth(healthAssessment);
       setProgress(100);
       if (user) {
-        await supabase.from('disease_detections').insert({ user_id: user.id, disease_name: analysisResult.overallCondition, confidence_score: analysisResult.confidence, treatment_suggestion: healthAssessment.condition }).throwOnError().catch(() => {});
+        // ✅ CORRECTION : .throwOnError().catch() est invalide avec Supabase
+        // On destructure { error } et on le gère manuellement
+        const { error: insertError } = await supabase
+          .from('disease_detections')
+          .insert({
+            user_id: user.id,
+            disease_name: analysisResult.overallCondition,
+            confidence_score: analysisResult.confidence,
+            treatment_suggestion: healthAssessment.condition,
+          });
+        if (insertError) {
+          console.warn('Erreur sauvegarde analyse:', insertError.message);
+        }
         loadScans(user.id);
       }
     } catch (e: any) { toast({ title: 'Erreur d\'analyse', description: e.message, variant: 'destructive' }); }
