@@ -1,180 +1,221 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { LocationSelector } from '@/components/LocationSelector';
 import { useLocationContext } from '@/contexts/LocationContext';
-import { MapPin, Cloud, Wind, Droplets, Eye, Thermometer, Loader2, AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { MapPin, Wind, Droplets, Eye, Thermometer, RefreshCw, ChevronDown } from 'lucide-react';
 
-interface WeatherData {
-  temperature: number; humidity: number; windSpeed: number;
-  condition: string; feelsLike: number; visibility: number; pressure: number;
-}
+const F  = "'Poppins', sans-serif";
+const FH = "'Outfit', sans-serif";
+const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY || 'bdc7bc29f0d1be26b9ba457903ad9ec5';
 
-const Weather = () => {
-  const { selectedLocationName, selectedCoordinates, setLocation, hasLocation, primaryCrops, bestSeasons, averageRainfall } = useLocationContext();
-  const [showSelector, setShowSelector] = useState(!hasLocation);
-  const [weather, setWeather] = useState<WeatherData | null>(null);
+const ALERTS = [
+  { type: 'warn', icon: '⚠️', t: 'Risque de fortes pluies', d: 'Des précipitations intenses sont prévues en fin de semaine. Prévoir un drainage des parcelles basses.' },
+  { type: 'info', icon: '🌱', t: 'Conditions de plantation optimales', d: 'Températures douces et humidité modérée — idéal pour les semis de maïs et légumineuses.' },
+  { type: 'ok',   icon: '💧', t: 'Bonne journée d\'irrigation', d: 'Faible évapotranspiration aujourd\'hui. Privilégiez l\'arrosage ce matin.' },
+];
+
+const INSIGHTS = [
+  { icon: '💧', t: 'Irrigation', d: 'Humidité élevée — réduisez la fréquence d\'arrosage de 30% cette semaine.' },
+  { icon: '🦠', t: 'Risque maladies', d: 'Forte humidité = risque fongique. Appliquez un traitement préventif sur le manioc.' },
+  { icon: '🌾', t: 'Fenêtre de récolte', d: 'Temps sec prévu jeudi-vendredi — moment idéal pour récolter et sécher les arachides.' },
+];
+
+export default function Weather() {
+  const { selectedLocationName, selectedCoordinates, setLocation, hasLocation, primaryCrops } = useLocationContext();
+  const [showLoc, setShowLoc] = useState(false);
+  const [weather, setWeather] = useState<any>(null);
+  const [forecast, setForecast] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [lastUp, setLastUp] = useState<Date | null>(null);
 
-  useEffect(() => {
-    if (selectedCoordinates) fetchWeather(selectedCoordinates.lat, selectedCoordinates.lon);
-  }, [selectedCoordinates]);
+  useEffect(() => { if (selectedCoordinates) fetchWeather(selectedCoordinates.lat, selectedCoordinates.lon); }, [selectedCoordinates]);
 
   const fetchWeather = async (lat: number, lon: number) => {
     setLoading(true);
     try {
-      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}&units=metric`);
-      if (res.ok) {
-        const d = await res.json();
-        setWeather({ temperature: Math.round(d.main.temp), humidity: d.main.humidity, windSpeed: Math.round((d.wind?.speed||0)*3.6), condition: d.weather[0]?.description||'', feelsLike: Math.round(d.main.feels_like), visibility: Math.round((d.visibility||10000)/1000), pressure: d.main.pressure });
+      const [cur, fore] = await Promise.all([
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=fr`).then(r => r.json()),
+        fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=fr`).then(r => r.json()),
+      ]);
+      setWeather(cur);
+      if (fore.list) {
+        const days: any[] = [];
+        const seen = new Set<string>();
+        fore.list.forEach((item: any) => {
+          const d = item.dt_txt.split(' ')[0];
+          if (!seen.has(d) && days.length < 7) { seen.add(d); days.push(item); }
+        });
+        setForecast(days);
       }
-    } catch(e) { console.error(e); } finally { setLoading(false); }
+      setLastUp(new Date());
+    } catch (e) { console.error(e); }
+    finally { setLoading(false); }
   };
 
-  const getAlerts = () => {
-    if (!weather) return [];
-    const crops = primaryCrops.length > 0 ? primaryCrops.join(', ') : 'vos cultures';
-    const alerts = [];
-    if (weather.humidity > 80) alerts.push({ type:'warning', icon:'⚠️', title:'Risque fongique élevé', description:`Humidité ${weather.humidity}% — risque pour ${crops}.`, action:'Pulvériser du neem' });
-    if (weather.temperature > 32) alerts.push({ type:'warning', icon:'🌡️', title:'Chaleur intense', description:`${weather.temperature}°C — arrosez tôt le matin et en soirée.`, action:'Pailler le sol' });
-    if (weather.humidity < 50) alerts.push({ type:'info', icon:'☀️', title:'Air sec', description:`Humidité ${weather.humidity}% — augmentez l'arrosage.`, action:"Vérifier l'irrigation" });
-    if (alerts.length === 0) alerts.push({ type:'success', icon:'✅', title:'Conditions favorables', description:`Bonne météo pour ${crops}.`, action:'Continuer normalement' });
-    return alerts;
+  const condIcon = (c: string = '') => {
+    if (c.includes('rain') || c.includes('pluie')) return '🌧️';
+    if (c.includes('cloud') || c.includes('nuage') || c.includes('couvert')) return '☁️';
+    if (c.includes('clear') || c.includes('dégagé') || c.includes('ensoleillé')) return '☀️';
+    return '⛅';
   };
 
-  const getInsights = () => {
-    const insights = [];
-    if (weather) {
-      insights.push({ icon:'💧', title:'Arrosage', advice: weather.humidity>70 ? "Humidité suffisante — réduisez l'arrosage de 30%." : "Arrosez en soirée pour limiter l'évaporation.", rel:'Élevée' });
-      insights.push({ icon:'🌱', title:'Activité du jour', advice: weather.temperature<28 ? 'Températures idéales pour semis, désherbage et traitements.' : 'Travaillez avant 9h ou après 17h.', rel:'Élevée' });
-    }
-    if (bestSeasons.length > 0) insights.push({ icon:'📅', title:'Calendrier cultural', advice:`Meilleures saisons : ${bestSeasons.join(' et ')}.`, rel:'Moyenne' });
-    if (averageRainfall) insights.push({ icon:'🌧️', title:'Pluviométrie', advice:`Votre zone reçoit ~${averageRainfall}mm/an. Planifiez l'irrigation en conséquence.`, rel:'Moyenne' });
-    return insights;
-  };
+  const alertStyle = (type: string) => ({
+    borderLeft: `4px solid ${type === 'warn' ? '#f59e0b' : type === 'info' ? '#064e3b' : '#10b981'}`,
+    background: type === 'warn' ? 'rgba(245,158,11,0.05)' : type === 'info' ? 'rgba(6,78,59,0.04)' : 'rgba(16,185,129,0.05)',
+  });
 
-  const alertStyle = (t:string) => t==='warning'?'border-l-4 border-yellow-500 bg-yellow-50':t==='success'?'border-l-4 border-green-500 bg-green-50':'border-l-4 border-primary bg-primary/5';
-  const relBadge = (r:string) => r==='Élevée'?'bg-red-100 text-red-700':r==='Moyenne'?'bg-yellow-100 text-yellow-700':'bg-gray-100 text-gray-600';
+  const dayFR = (dtTxt: string) => {
+    const d = new Date(dtTxt);
+    return d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-3">Météo Agricole 🌤️</h1>
-          <p className="text-muted-foreground">Prévisions et conseils adaptés à votre localité au Congo Brazzaville</p>
-        </div>
+    <div style={{ minHeight: '100vh', background: '#f9f6f0', fontFamily: F }}>
 
-        {/* Barre localisation */}
-        <Card className="earth-card p-5 mb-6 max-w-2xl mx-auto">
-          <div className="flex items-center gap-4">
-            <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
-            <div className="flex-1">
-              <div className="font-medium text-foreground">{hasLocation ? selectedLocationName : 'Aucune localité sélectionnée'}</div>
-              {primaryCrops.length > 0 && <div className="text-xs text-muted-foreground mt-0.5">Cultures : {primaryCrops.slice(0,3).join(', ')}</div>}
-            </div>
-            <Button variant="outline" size="sm" onClick={() => setShowSelector(!showSelector)}>
-              <MapPin className="w-4 h-4 mr-2" />{hasLocation ? 'Changer' : 'Choisir'}
-            </Button>
+      {/* Header */}
+      <div style={{ background: 'linear-gradient(160deg,#022c22 0%,#064e3b 100%)', paddingTop: '7rem', paddingBottom: '3.5rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+          <span style={{ display: 'inline-block', padding: '0.3rem 1rem', borderRadius: '2rem', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', fontFamily: F, fontSize: '0.65rem', fontWeight: 700, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: '0.25em', marginBottom: '1rem' }}>Météo agricole</span>
+          <h1 style={{ fontFamily: FH, fontWeight: 900, fontSize: 'clamp(2rem,5vw,3.5rem)', color: 'white', letterSpacing: '-0.025em', lineHeight: 1.05, marginBottom: '0.8rem' }}>
+            Prévisions pour<br /><span style={{ color: '#a38a5e', fontStyle: 'italic' }}>{hasLocation ? selectedLocationName : 'votre zone.'}</span>
+          </h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <button onClick={() => setShowLoc(!showLoc)}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.2rem', borderRadius: '2rem', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', fontFamily: F, fontSize: '0.78rem', fontWeight: 600, color: 'white' }}>
+              <MapPin size={14} color="#10b981" />
+              {hasLocation ? selectedLocationName : 'Choisir ma localité'}
+              <ChevronDown size={13} />
+            </button>
+            {lastUp && (
+              <span style={{ fontFamily: F, fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)' }}>
+                Mis à jour {lastUp.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
+            {hasLocation && (
+              <button onClick={() => selectedCoordinates && fetchWeather(selectedCoordinates.lat, selectedCoordinates.lon)} disabled={loading}
+                style={{ padding: '0.5rem', borderRadius: '50%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', display: 'flex', color: 'white' }}
+                className={loading ? 'animate-spin' : ''}>
+                <RefreshCw size={14} />
+              </button>
+            )}
           </div>
-        </Card>
+        </div>
+      </div>
 
-        {showSelector && (
-          <Card className="earth-card p-6 mb-6 max-w-4xl mx-auto">
-            <LocationSelector selectedLocation={selectedLocationName} onLocationChange={(n,c,d) => { setLocation(n,c,d); setShowSelector(false); }} showWeather={false} />
-          </Card>
-        )}
+      {showLoc && (
+        <div style={{ maxWidth: '960px', margin: '-1rem auto 0', padding: '0 1.5rem' }}>
+          <div style={{ borderRadius: '1.5rem', overflow: 'hidden', border: '1px solid rgba(6,78,59,0.1)', boxShadow: '0 8px 40px rgba(6,78,59,0.08)' }}>
+            <LocationSelector selectedLocation={selectedLocationName}
+              onLocationChange={(n, c, d) => { setLocation(n, c, d); setShowLoc(false); if (c) fetchWeather(c.lat, c.lon); }}
+              showWeather={false} />
+          </div>
+        </div>
+      )}
 
-        {!hasLocation ? (
-          <Card className="earth-card p-12 text-center max-w-xl mx-auto">
-            <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Sélectionnez votre localité</h3>
-            <p className="text-muted-foreground mb-4">Choisissez votre ville pour afficher la météo et les conseils agricoles adaptés.</p>
-            <Button onClick={() => setShowSelector(true)}><MapPin className="w-4 h-4 mr-2" />Choisir ma localité</Button>
-          </Card>
-        ) : (
-          <>
-            {/* Météo actuelle */}
-            <Card className="earth-card p-8 mb-8">
-              <h2 className="text-xl font-semibold mb-6 flex items-center gap-2"><Cloud className="w-5 h-5 text-primary" />Conditions actuelles — {selectedLocationName}</h2>
-              {loading ? (
-                <div className="flex items-center justify-center py-10 gap-3 text-muted-foreground"><Loader2 className="w-5 h-5 animate-spin" />Chargement...</div>
-              ) : weather ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                  {[
-                    { icon:<Thermometer className="w-6 h-6 text-red-500"/>, val:`${weather.temperature}°C`, lbl:'Température', sub:`Ressenti ${weather.feelsLike}°C` },
-                    { icon:<Droplets className="w-6 h-6 text-blue-500"/>, val:`${weather.humidity}%`, lbl:'Humidité', sub:weather.condition },
-                    { icon:<Wind className="w-6 h-6 text-green-500"/>, val:`${weather.windSpeed}km/h`, lbl:'Vent', sub:`${weather.pressure}hPa` },
-                    { icon:<Eye className="w-6 h-6 text-purple-500"/>, val:`${weather.visibility}km`, lbl:'Visibilité', sub:'' },
-                    { icon:<span className="text-2xl">🌧️</span>, val:averageRainfall?`${averageRainfall}mm`:'—', lbl:'Pluie/an (zone)', sub:'' },
-                    { icon:<span className="text-2xl">🌱</span>, val:primaryCrops[0]||'—', lbl:'Culture principale', sub:'' },
-                  ].map((item,i) => (
-                    <div key={i} className="text-center p-4 bg-card-soft rounded-xl">
-                      <div className="flex justify-center mb-2">{item.icon}</div>
-                      <div className="text-xl font-bold text-foreground">{item.val}</div>
-                      <div className="text-xs text-muted-foreground">{item.lbl}</div>
-                      {item.sub && <div className="text-xs text-muted-foreground mt-1">{item.sub}</div>}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground py-6">Vérifiez votre clé API OpenWeather dans les variables d'environnement.</p>
-              )}
-            </Card>
+      <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Alertes */}
+        {/* Météo actuelle */}
+        {weather ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem', marginBottom: '2rem' }}>
+            {/* Température principale */}
+            <div style={{ background: 'white', borderRadius: '2rem', padding: '2rem', border: '1px solid rgba(6,78,59,0.07)', boxShadow: '0 2px 20px rgba(6,78,59,0.05)', gridColumn: 'span 1', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              <div style={{ fontSize: '4rem' }}>{condIcon(weather.weather?.[0]?.description)}</div>
               <div>
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2"><AlertTriangle className="w-5 h-5 text-yellow-500" />Alertes agricoles</h2>
-                <div className="space-y-4">
-                  {getAlerts().map((a,i) => (
-                    <Card key={i} className={`earth-card p-5 ${alertStyle(a.type)}`}>
-                      <div className="flex items-start gap-4">
-                        <span className="text-2xl">{a.icon}</span>
-                        <div className="flex-1">
-                          <h3 className="font-semibold mb-1">{a.title}</h3>
-                          <p className="text-sm text-muted-foreground mb-3">{a.description}</p>
-                          <Button size="sm" variant="outline">{a.action}</Button>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-
-              {/* Conseils */}
-              <div>
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2"><CheckCircle className="w-5 h-5 text-green-500" />Conseils pour votre zone</h2>
-                <div className="space-y-4">
-                  {getInsights().map((ins,i) => (
-                    <Card key={i} className="earth-card p-5">
-                      <div className="flex items-start gap-4">
-                        <span className="text-2xl">{ins.icon}</span>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-1">
-                            <h3 className="font-semibold">{ins.title}</h3>
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${relBadge(ins.rel)}`}>{ins.rel}</span>
-                          </div>
-                          <p className="text-sm text-muted-foreground">{ins.advice}</p>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-
-                {(primaryCrops.length>0 || bestSeasons.length>0) && (
-                  <Card className="earth-card p-5 mt-4">
-                    <h3 className="font-semibold mb-3 flex items-center gap-2"><Info className="w-4 h-4 text-primary"/>Profil de votre zone</h3>
-                    {primaryCrops.length>0 && <div className="mb-3"><div className="text-xs text-muted-foreground mb-2">Cultures adaptées :</div><div className="flex flex-wrap gap-2">{primaryCrops.map((c,i)=><Badge key={i} variant="secondary" className="text-xs">{c}</Badge>)}</div></div>}
-                    {bestSeasons.length>0 && <div><div className="text-xs text-muted-foreground mb-2">Meilleures saisons :</div><div className="flex flex-wrap gap-2">{bestSeasons.map((s,i)=><Badge key={i} variant="outline" className="text-xs">{s}</Badge>)}</div></div>}
-                  </Card>
-                )}
+                <div style={{ fontFamily: FH, fontWeight: 900, fontSize: '3.5rem', color: '#064e3b', lineHeight: 1 }}>{Math.round(weather.main?.temp)}°</div>
+                <div style={{ fontFamily: F, fontSize: '0.9rem', color: '#6b7280', textTransform: 'capitalize', marginTop: '0.3rem' }}>{weather.weather?.[0]?.description}</div>
+                <div style={{ fontFamily: F, fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.2rem' }}>Ressenti {Math.round(weather.main?.feels_like)}°C</div>
               </div>
             </div>
-          </>
+
+            {/* Stats */}
+            {[
+              { icon: <Droplets size={18} />, label: 'Humidité', val: `${weather.main?.humidity}%`, color: '#3b82f6' },
+              { icon: <Wind size={18} />, label: 'Vent', val: `${Math.round((weather.wind?.speed || 0) * 3.6)} km/h`, color: '#64748b' },
+              { icon: <Eye size={18} />, label: 'Visibilité', val: `${((weather.visibility || 0) / 1000).toFixed(0)} km`, color: '#8b5cf6' },
+              { icon: <Thermometer size={18} />, label: 'Pression', val: `${weather.main?.pressure} hPa`, color: '#f59e0b' },
+            ].map((s, i) => (
+              <div key={i} style={{ background: 'white', borderRadius: '2rem', padding: '1.5rem', border: '1px solid rgba(6,78,59,0.07)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '1rem', background: `${s.color}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color, flexShrink: 0 }}>{s.icon}</div>
+                <div>
+                  <div style={{ fontFamily: F, fontSize: '0.68rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{s.label}</div>
+                  <div style={{ fontFamily: FH, fontWeight: 800, color: '#064e3b', fontSize: '1.2rem', marginTop: '0.1rem' }}>{s.val}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          !loading && !hasLocation && (
+            <div style={{ background: 'white', borderRadius: '2rem', padding: '3rem', textAlign: 'center', border: '1px solid rgba(6,78,59,0.07)', marginBottom: '2rem' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🌤️</div>
+              <div style={{ fontFamily: FH, fontWeight: 800, color: '#064e3b', fontSize: '1.2rem', marginBottom: '0.5rem' }}>Sélectionnez votre localité</div>
+              <div style={{ fontFamily: F, fontSize: '0.85rem', color: '#9ca3af' }}>Choisissez votre zone pour afficher la météo en temps réel</div>
+            </div>
+          )
         )}
+
+        {/* Prévisions 7 jours */}
+        {forecast.length > 0 && (
+          <div style={{ background: 'white', borderRadius: '2rem', padding: '2rem', border: '1px solid rgba(6,78,59,0.07)', marginBottom: '2rem' }}>
+            <h2 style={{ fontFamily: FH, fontWeight: 800, color: '#064e3b', fontSize: '1.1rem', marginBottom: '1.5rem' }}>📅 Prévisions 7 jours</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem', overflowX: 'auto' }}>
+              {forecast.map((day, i) => (
+                <div key={i} style={{ textAlign: 'center', padding: '1rem 0.5rem', borderRadius: '1.2rem', background: i === 0 ? '#064e3b' : '#f9f6f0', minWidth: '70px' }}>
+                  <div style={{ fontFamily: F, fontSize: '0.65rem', color: i === 0 ? 'rgba(255,255,255,0.6)' : '#9ca3af', marginBottom: '0.5rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{i === 0 ? "Auj." : dayFR(day.dt_txt)}</div>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{condIcon(day.weather?.[0]?.description)}</div>
+                  <div style={{ fontFamily: FH, fontWeight: 800, color: i === 0 ? 'white' : '#064e3b', fontSize: '1rem' }}>{Math.round(day.main?.temp_max)}°</div>
+                  <div style={{ fontFamily: F, fontSize: '0.7rem', color: i === 0 ? 'rgba(255,255,255,0.5)' : '#9ca3af' }}>{Math.round(day.main?.temp_min)}°</div>
+                  {day.pop > 0.2 && <div style={{ fontFamily: F, fontSize: '0.65rem', color: '#3b82f6', marginTop: '0.3rem' }}>💧 {Math.round(day.pop * 100)}%</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.2rem' }}>
+          {/* Alertes */}
+          <div style={{ background: 'white', borderRadius: '2rem', padding: '2rem', border: '1px solid rgba(6,78,59,0.07)' }}>
+            <h2 style={{ fontFamily: FH, fontWeight: 800, color: '#064e3b', fontSize: '1rem', marginBottom: '1.2rem' }}>🔔 Alertes agricoles</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+              {ALERTS.map((a, i) => (
+                <div key={i} style={{ padding: '1rem', borderRadius: '1rem', ...alertStyle(a.type) }}>
+                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{a.icon}</span>
+                    <div>
+                      <div style={{ fontFamily: FH, fontWeight: 700, color: '#064e3b', fontSize: '0.85rem', marginBottom: '0.2rem' }}>{a.t}</div>
+                      <div style={{ fontFamily: F, fontSize: '0.75rem', color: '#6b7280', lineHeight: 1.5 }}>{a.d}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Insights */}
+          <div style={{ background: 'white', borderRadius: '2rem', padding: '2rem', border: '1px solid rgba(6,78,59,0.07)' }}>
+            <h2 style={{ fontFamily: FH, fontWeight: 800, color: '#064e3b', fontSize: '1rem', marginBottom: '1.2rem' }}>💡 Conseils météo</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {INSIGHTS.map((ins, i) => (
+                <div key={i} style={{ display: 'flex', gap: '0.8rem' }}>
+                  <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>{ins.icon}</span>
+                  <div>
+                    <div style={{ fontFamily: FH, fontWeight: 700, color: '#064e3b', fontSize: '0.85rem', marginBottom: '0.2rem' }}>{ins.t}</div>
+                    <div style={{ fontFamily: F, fontSize: '0.75rem', color: '#6b7280', lineHeight: 1.5 }}>{ins.d}</div>
+                  </div>
+                </div>
+              ))}
+              {primaryCrops.length > 0 && (
+                <div style={{ borderTop: '1px solid rgba(6,78,59,0.08)', paddingTop: '1rem', marginTop: '0.5rem' }}>
+                  <div style={{ fontFamily: FH, fontWeight: 700, color: '#064e3b', fontSize: '0.85rem', marginBottom: '0.6rem' }}>Vos cultures :</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                    {primaryCrops.map((c, i) => (
+                      <span key={i} style={{ padding: '0.25rem 0.7rem', borderRadius: '2rem', background: 'rgba(6,78,59,0.07)', fontFamily: F, fontSize: '0.72rem', color: '#064e3b', fontWeight: 600 }}>{c}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
-};
-export default Weather;
+}
