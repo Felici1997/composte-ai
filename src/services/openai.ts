@@ -452,7 +452,7 @@ Génère 4+ phases et ${Math.ceil(params.durationDays / 7)} semaines minimum.`;
         phase: 'Floraison / Fructification',
         start_day: Math.round(d * 0.5) + 1, end_day: Math.round(d * 0.8),
         description: 'Développement des fleurs ou fruits. Fertilisation recommandée.',
-        key_actions: ['Fertiliser', 'Réduire l'arrosage progressivement', 'Traitement préventif'],
+        key_actions: ['Fertiliser', 'Réduire l\'arrosage progressivement', 'Traitement préventif'],
       },
       {
         phase: 'Maturation et récolte',
@@ -475,7 +475,7 @@ Génère 4+ phases et ${Math.ceil(params.durationDays / 7)} semaines minimum.`;
           pct < 0.5 ? 'Désherbage manuel autour des plants' : 'Surveillance des maladies',
           pct > 0.7 ? `Préparer la récolte de ${params.cropName}` : 'Observer la croissance des plants',
         ],
-        risks: pct < 0.4 ? 'Fonte des semis si excès d'eau' : pct < 0.7 ? 'Attaque de ravageurs' : 'Pourriture si récolte tardive',
+        risks: pct < 0.4 ? "Fonte des semis si excès d'eau" : pct < 0.7 ? 'Attaque de ravageurs' : 'Pourriture si récolte tardive',
         tips: `Semaine ${w} sur ${nbWeeks} — ${Math.round(pct * 100)}% du cycle accompli`,
       };
     });
@@ -483,14 +483,15 @@ Génère 4+ phases et ${Math.ceil(params.durationDays / 7)} semaines minimum.`;
     // Tâches immédiates
     const immediate_tasks = [
       { day_offset: 0, category: 'observation', title: `Inspecter la parcelle de ${params.cropName}`, description: 'État du sol, humidité, présence de mauvaises herbes', priority: 'high' },
-      { day_offset: 0, category: 'arrosage',    title: 'Premier arrosage', description: 'Arroser en fin d'après-midi pour éviter l'évaporation', priority: 'normal' },
-      { day_offset: 1, category: 'désherbage',  title: 'Désherbage initial', description: 'Éliminer les mauvaises herbes avant plantation', priority: 'normal' },
+      { day_offset: 0, category: 'arrosage',    title: 'Premier arrosage', description: "Arroser en fin d'après-midi pour éviter l'évaporation", priority: 'normal' },
+      { day_offset: 1, category: 'désherbage',  title: 'Désherbage initial', description: "Éliminer les mauvaises herbes avant plantation", priority: 'normal' },
       { day_offset: 2, category: 'observation', title: 'Vérifier la germination', description: 'Observer les premiers signes de croissance', priority: 'normal' },
-      { day_offset: 7, category: 'fertilisation', title: 'Premier apport d'engrais', description: 'Engrais de fond si disponible', priority: 'low' },
+      { day_offset: 7, category: 'fertilisation', title: "Premier apport d'engrais", description: 'Engrais de fond si disponible', priority: 'low' },
     ];
 
     return { phases, weekly_tasks, immediate_tasks };
   }
 
+}
 
 export const openAIService = new OpenAIService();
