@@ -1,4 +1,5 @@
 // Service IA — Composte AI Congo Brazzaville
+import { callAI, getActiveProvider } from './aiProvider';
 // Conseils agricoles intelligents en français pour les agriculteurs congolais
 
 interface OpenAIMessage {
@@ -373,7 +374,123 @@ ${temp > 30 ? `🔥 **Chaleur élevée (${temp}°C) :**\n• Arrosez tôt le mat
 
 Bonne journée au champ ! 🌾`;
   }
-}
+  async generateCropPlanning(params: {
+    cropName:     string;
+    variety?:     string;
+    superficie?:  number;
+    durationDays: number;
+    nurseryDays:  number;
+    startDate:    string;
+    tools:        string[];
+    workers:      number;
+    treatments:   { name: string; type: string; frequency: string }[];
+    location:     string;
+    weather?:     string;
+    forecast?:    string;
+  }): Promise<{ phases: any[]; weekly_tasks: any[]; immediate_tasks: any[] } | null> {
 
-// Export de l'instance unique
+    const prompt = `Tu es un agronome expert en agriculture tropicale au Congo Brazzaville.
+
+Génère un planning de production en JSON strict pour :
+- Culture : ${params.cropName}${params.variety ? ` (${params.variety})` : ''}
+- Superficie : ${params.superficie ? `${params.superficie} m²` : 'non précisée'}
+- Durée : ${params.durationDays} jours${params.nurseryDays ? ` (dont ${params.nurseryDays} j. pépinière)` : ''}
+- Début : ${params.startDate}
+- Outils : ${params.tools.length ? params.tools.join(', ') : 'outils de base'}
+- Travailleurs : ${params.workers}
+- Traitements : ${params.treatments.length ? params.treatments.map(t => `${t.name} (${t.type}, ${t.frequency})`).join(', ') : 'aucun'}
+- Localité : ${params.location}
+${params.weather ? `- Météo : ${params.weather}` : ''}
+${params.forecast ? `- Prévisions : ${params.forecast}` : ''}
+
+Réponds UNIQUEMENT avec ce JSON valide (sans markdown) :
+{"phases":[{"phase":"Nom","start_day":1,"end_day":15,"description":"desc","key_actions":["action1","action2"]}],"weekly_tasks":[{"week":1,"title":"Titre","tasks":["tâche1","tâche2"],"risks":"risque","tips":"conseil"}],"immediate_tasks":[{"day_offset":0,"category":"arrosage","title":"Titre","description":"desc","priority":"normal"}]}
+
+Génère 4+ phases et ${Math.ceil(params.durationDays / 7)} semaines minimum.`;
+
+    try {
+      const result = await callAI(prompt, 1500);
+      if (!result) return this.getFallbackPlanning(params);
+      const jsonMatch = result.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) return this.getFallbackPlanning(params);
+      return JSON.parse(jsonMatch[0]);
+    } catch {
+      return this.getFallbackPlanning(params);
+    }
+  }
+
+  /** Planning générique quand aucune clé IA n'est configurée */
+  private getFallbackPlanning(params: {
+    cropName: string; durationDays: number; nurseryDays: number;
+    startDate: string;
+  }): { phases: any[]; weekly_tasks: any[]; immediate_tasks: any[] } {
+    const start = new Date(params.startDate);
+    const d = params.durationDays;
+    const hasNursery = params.nurseryDays > 0;
+
+    // Phases génériques adaptées à la durée
+    const phases = [
+      ...(hasNursery ? [{
+        phase: 'Pépinière',
+        start_day: 1, end_day: params.nurseryDays,
+        description: 'Préparation et germination des semences en pépinière.',
+        key_actions: ['Préparer les semences', 'Arroser quotidiennement', 'Surveiller la germination'],
+      }] : []),
+      {
+        phase: 'Mise en place',
+        start_day: params.nurseryDays + 1, end_day: Math.round(d * 0.15),
+        description: 'Préparation du sol, plantation et installation.',
+        key_actions: ['Labourer et ameublir le sol', 'Planter ou repiquer', 'Premier arrosage'],
+      },
+      {
+        phase: 'Croissance végétative',
+        start_day: Math.round(d * 0.15) + 1, end_day: Math.round(d * 0.5),
+        description: 'Développement des feuilles et tiges. Période critique.',
+        key_actions: ['Arroser régulièrement', 'Désherber', 'Surveiller les ravageurs'],
+      },
+      {
+        phase: 'Floraison / Fructification',
+        start_day: Math.round(d * 0.5) + 1, end_day: Math.round(d * 0.8),
+        description: 'Développement des fleurs ou fruits. Fertilisation recommandée.',
+        key_actions: ['Fertiliser', 'Réduire l'arrosage progressivement', 'Traitement préventif'],
+      },
+      {
+        phase: 'Maturation et récolte',
+        start_day: Math.round(d * 0.8) + 1, end_day: d,
+        description: 'Maturité et récolte progressive.',
+        key_actions: ['Surveiller la maturité', 'Préparer les contenants', 'Récolter en plusieurs passages'],
+      },
+    ];
+
+    // Tâches hebdomadaires génériques
+    const nbWeeks = Math.ceil(d / 7);
+    const weekly_tasks = Array.from({ length: nbWeeks }, (_, i) => {
+      const w = i + 1;
+      const pct = w / nbWeeks;
+      return {
+        week: w,
+        title: pct < 0.2 ? 'Installation' : pct < 0.5 ? 'Croissance' : pct < 0.8 ? 'Développement' : 'Récolte',
+        tasks: [
+          pct < 0.3 ? 'Arrosage quotidien le matin' : 'Arrosage tous les 2 jours',
+          pct < 0.5 ? 'Désherbage manuel autour des plants' : 'Surveillance des maladies',
+          pct > 0.7 ? `Préparer la récolte de ${params.cropName}` : 'Observer la croissance des plants',
+        ],
+        risks: pct < 0.4 ? 'Fonte des semis si excès d'eau' : pct < 0.7 ? 'Attaque de ravageurs' : 'Pourriture si récolte tardive',
+        tips: `Semaine ${w} sur ${nbWeeks} — ${Math.round(pct * 100)}% du cycle accompli`,
+      };
+    });
+
+    // Tâches immédiates
+    const immediate_tasks = [
+      { day_offset: 0, category: 'observation', title: `Inspecter la parcelle de ${params.cropName}`, description: 'État du sol, humidité, présence de mauvaises herbes', priority: 'high' },
+      { day_offset: 0, category: 'arrosage',    title: 'Premier arrosage', description: 'Arroser en fin d'après-midi pour éviter l'évaporation', priority: 'normal' },
+      { day_offset: 1, category: 'désherbage',  title: 'Désherbage initial', description: 'Éliminer les mauvaises herbes avant plantation', priority: 'normal' },
+      { day_offset: 2, category: 'observation', title: 'Vérifier la germination', description: 'Observer les premiers signes de croissance', priority: 'normal' },
+      { day_offset: 7, category: 'fertilisation', title: 'Premier apport d'engrais', description: 'Engrais de fond si disponible', priority: 'low' },
+    ];
+
+    return { phases, weekly_tasks, immediate_tasks };
+  }
+
+
 export const openAIService = new OpenAIService();
