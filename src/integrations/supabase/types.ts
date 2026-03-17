@@ -14,6 +14,124 @@ export type Database = {
   }
   public: {
     Tables: {
+      crop_cycles: {
+        Row: {
+          id:                string
+          user_id:           string
+          crop_name:         string
+          variety:           string | null
+          superficie_m2:     number | null
+          duration_days:     number
+          nursery_days:      number
+          start_date:        string
+          expected_end_date: string | null
+          tools:             string[]
+          workers_count:     number
+          treatments:        Json
+          status:            string
+          ai_calendar:       Json | null
+          ai_weekly_tasks:   Json | null
+          ai_generated_at:   string | null
+          weather_snapshot:  Json | null
+          created_at:        string
+          updated_at:        string
+        }
+        Insert: {
+          id?:               string
+          user_id:           string
+          crop_name:         string
+          variety?:          string | null
+          superficie_m2?:    number | null
+          duration_days:     number
+          nursery_days?:     number
+          start_date:        string
+          expected_end_date?: string | null
+          tools?:            string[]
+          workers_count?:    number
+          treatments?:       Json
+          status?:           string
+          ai_calendar?:      Json | null
+          ai_weekly_tasks?:  Json | null
+          ai_generated_at?:  string | null
+          weather_snapshot?: Json | null
+          created_at?:       string
+          updated_at?:       string
+        }
+        Update: {
+          crop_name?:        string
+          variety?:          string | null
+          superficie_m2?:    number | null
+          duration_days?:    number
+          nursery_days?:     number
+          start_date?:       string
+          expected_end_date?: string | null
+          tools?:            string[]
+          workers_count?:    number
+          treatments?:       Json
+          status?:           string
+          ai_calendar?:      Json | null
+          ai_weekly_tasks?:  Json | null
+          ai_generated_at?:  string | null
+          weather_snapshot?: Json | null
+          updated_at?:       string
+        }
+        Relationships: []
+      }
+      crop_tasks: {
+        Row: {
+          id:             string
+          cycle_id:       string
+          user_id:        string
+          scheduled_date: string
+          week_number:    number | null
+          day_number:     number | null
+          category:       string
+          title:          string
+          description:    string | null
+          priority:       string
+          done:           boolean
+          done_at:        string | null
+          notes:          string | null
+          created_at:     string
+        }
+        Insert: {
+          id?:            string
+          cycle_id:       string
+          user_id:        string
+          scheduled_date: string
+          week_number?:   number | null
+          day_number?:    number | null
+          category:       string
+          title:          string
+          description?:   string | null
+          priority?:      string
+          done?:          boolean
+          done_at?:       string | null
+          notes?:         string | null
+          created_at?:    string
+        }
+        Update: {
+          scheduled_date?: string
+          week_number?:    number | null
+          day_number?:     number | null
+          category?:       string
+          title?:          string
+          description?:    string | null
+          priority?:       string
+          done?:           boolean
+          done_at?:        string | null
+          notes?:          string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crop_tasks_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "crop_cycles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       crop_recommendations: {
         Row: {
           created_at: string
