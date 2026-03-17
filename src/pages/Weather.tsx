@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { LocationSelector } from '@/components/LocationSelector';
 import { useLocationContext } from '@/contexts/LocationContext';
 import { MapPin, Wind, Droplets, Eye, Thermometer, RefreshCw, ChevronDown } from 'lucide-react';
+import CulturePlanning from '@/components/CulturePlanning';
 
 const F  = "'Poppins', sans-serif";
 const FH = "'Outfit', sans-serif";
@@ -214,6 +215,12 @@ export default function Weather() {
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+        {/* ══ PLANNING DES CULTURES ══ */}
+        <div style={{ borderTop: '2px dashed rgba(6,78,59,0.08)', paddingTop: '2.5rem', marginTop: '1rem' }}>
+          <CulturePlanning weather={weather} forecast={forecast} />
         </div>
       </div>
     </div>
