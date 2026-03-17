@@ -216,12 +216,12 @@ export default function Weather() {
             </div>
           </div>
         </div>
-      </div>
 
         {/* ══ PLANNING DES CULTURES ══ */}
         <div style={{ borderTop: '2px dashed rgba(6,78,59,0.08)', paddingTop: '2.5rem', marginTop: '1rem' }}>
           <CulturePlanning weather={weather} forecast={forecast} />
         </div>
+
       </div>
     </div>
   );
