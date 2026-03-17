@@ -7,10 +7,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLocationContext } from '@/contexts/LocationContext';
 import { useToast } from '@/hooks/use-toast';
+import { openAIService } from '@/services/openai';
+import AIProviderSelector from '@/components/AIProviderSelector';
 import {
-  Plus, ChevronDown, ChevronUp, Check, Trash2, Edit3,
-  Calendar, Users, Wrench, FlaskConical, Loader2,
-  Sprout, CheckCircle2, Circle, AlertTriangle, ChevronRight,
+  Plus, ChevronDown, ChevronUp, Trash2, Loader2,
+  Sprout, CheckCircle2, Circle, ChevronRight,
   RefreshCw, X
 } from 'lucide-react';
 
@@ -226,74 +227,29 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
   const generateAICalendar = async (cycle: CropCycle) => {
     setAiLoading(cycle.id);
     try {
-      const weatherCtx = weather ? `Météo actuelle : ${Math.round(weather.main?.temp)}°C, humidité ${weather.main?.humidity}%, ${weather.weather?.[0]?.description}.` : '';
+      const weatherCtx = weather
+        ? `${Math.round(weather.main?.temp)}°C, humidité ${weather.main?.humidity}%, ${weather.weather?.[0]?.description}`
+        : undefined;
       const forecastCtx = forecast && forecast.length > 0
-        ? `Prévisions 7 jours : ${forecast.slice(0,5).map((d: any) => `${Math.round(d.main?.temp)}°C`).join(', ')}.` : '';
+        ? forecast.slice(0, 5).map((d: any) => `${Math.round(d.main?.temp)}°C`).join(', ')
+        : undefined;
 
-      const prompt = `Tu es un agronome expert en agriculture tropicale au Congo Brazzaville.
-
-Génère un planning de production détaillé en JSON strict pour cette culture :
-- Culture : ${cycle.crop_name}${cycle.variety ? ` (${cycle.variety})` : ''}
-- Superficie : ${cycle.superficie_m2 ? `${cycle.superficie_m2} m²` : 'non précisée'}
-- Durée totale : ${cycle.duration_days} jours${cycle.nursery_days ? ` (dont ${cycle.nursery_days} jours de pépinière)` : ''}
-- Date de début : ${cycle.start_date}
-- Outils disponibles : ${cycle.tools.length ? cycle.tools.join(', ') : 'outils de base'}
-- Travailleurs : ${cycle.workers_count} personne(s)
-- Traitements prévus : ${cycle.treatments.length ? cycle.treatments.map(t => `${t.name} (${t.type}, ${t.frequency})`).join(', ') : 'aucun précisé'}
-- Localité : ${selectedLocationName || 'Congo Brazzaville'}
-${weatherCtx}
-${forecastCtx}
-
-Réponds UNIQUEMENT avec ce JSON (pas de markdown, pas de texte avant/après) :
-{
-  "phases": [
-    {
-      "phase": "Nom de la phase",
-      "start_day": 1,
-      "end_day": 15,
-      "description": "Description courte",
-      "key_actions": ["Action 1", "Action 2", "Action 3"]
-    }
-  ],
-  "weekly_tasks": [
-    {
-      "week": 1,
-      "title": "Titre de la semaine",
-      "tasks": ["Tâche concrète 1", "Tâche concrète 2"],
-      "risks": "Risque principal",
-      "tips": "Conseil météo ou agronomique"
-    }
-  ],
-  "immediate_tasks": [
-    {
-      "day_offset": 0,
-      "category": "arrosage",
-      "title": "Titre",
-      "description": "Description",
-      "priority": "normal"
-    }
-  ]
-}
-
-Génère au minimum 4 phases et ${Math.ceil(cycle.duration_days / 7)} semaines de tâches. Les tâches doivent être concrètes et adaptées à la météo actuelle.`;
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: prompt }],
-        }),
+      const parsed = await openAIService.generateCropPlanning({
+        cropName:     cycle.crop_name,
+        variety:      cycle.variety,
+        superficie:   cycle.superficie_m2 ?? undefined,
+        durationDays: cycle.duration_days,
+        nurseryDays:  cycle.nursery_days,
+        startDate:    cycle.start_date,
+        tools:        cycle.tools,
+        workers:      cycle.workers_count,
+        treatments:   cycle.treatments,
+        location:     selectedLocationName || 'Congo Brazzaville',
+        weather:      weatherCtx,
+        forecast:     forecastCtx,
       });
 
-      const data = await response.json();
-      const text = data.content?.find((b: any) => b.type === 'text')?.text || '';
-
-      // Parser JSON
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('Format IA invalide');
-      const parsed = JSON.parse(jsonMatch[0]);
+      if (!parsed) throw new Error('Aucune réponse IA. Vérifiez la clé VITE_OPENAI_API_KEY dans Vercel.');
 
       // Sauvegarder le calendrier dans Supabase
       const { error: upErr } = await supabase.from('crop_cycles').update({
@@ -333,7 +289,6 @@ Génère au minimum 4 phases et ${Math.ceil(cycle.duration_days / 7)} semaines d
       setAiLoading(null);
     }
   };
-
   /* ─── MARQUER TÂCHE ─── */
   const toggleTask = async (task: CropTask) => {
     const { error } = await supabase.from('crop_tasks').update({
@@ -402,6 +357,10 @@ Génère au minimum 4 phases et ${Math.ceil(cycle.duration_days / 7)} semaines d
           <p style={{ fontFamily: F, fontSize: '0.78rem', color: '#9ca3af' }}>
             Planifiez et suivez vos cultures avec des tâches générées par IA selon la météo
           </p>
+          <div style={{ marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ fontFamily: F, fontSize: '0.65rem', color: '#9ca3af' }}>IA :</span>
+            <AIProviderSelector compact />
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
           {pendingToday > 0 && (
