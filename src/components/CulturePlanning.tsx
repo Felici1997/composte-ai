@@ -326,30 +326,25 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
 
   /* ─── STYLES ─── */
   const inp: React.CSSProperties = {
-    width: '100%', padding: '0.8rem 1rem', borderRadius: '0.9rem',
+    width: '100%', padding: '0.75rem 0.9rem', borderRadius: '0.9rem',
     border: '1.5px solid rgba(6,78,59,0.12)', background: '#f9f6f0',
     fontFamily: F, fontSize: '0.85rem', color: '#064e3b', outline: 'none',
-    boxSizing: 'border-box',
+    boxSizing: 'border-box', minWidth: 0,
   };
   const lbl: React.CSSProperties = {
     fontFamily: F, fontSize: '0.67rem', fontWeight: 700, color: '#9ca3af',
     textTransform: 'uppercase', letterSpacing: '0.12em', display: 'block', marginBottom: '0.4rem',
   };
 
-  if (!userId) return (
-    <div style={{ background: 'white', borderRadius: '2rem', padding: '2.5rem', textAlign: 'center', border: '1px solid rgba(6,78,59,0.07)' }}>
-      <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📅</div>
-      <div style={{ fontFamily: FH, fontWeight: 800, color: '#064e3b', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Connectez-vous pour accéder au planning</div>
-      <div style={{ fontFamily: F, fontSize: '0.82rem', color: '#9ca3af' }}>Le planning de cultures nécessite un compte Composte AI.</div>
-    </div>
-  );
+  // Si pas connecté, on affiche quand même le titre + invitation
+  const notLoggedIn = !userId;
 
   /* ─────────── RENDU ─────────── */
   return (
     <div style={{ fontFamily: F }}>
 
       {/* ══ TITRE SECTION ══ */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
         <div>
           <h2 style={{ fontFamily: FH, fontWeight: 900, fontSize: '1.6rem', color: '#064e3b', letterSpacing: '-0.02em', lineHeight: 1, marginBottom: '0.3rem' }}>
             📅 Planning des cultures
@@ -362,17 +357,20 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
             <AIProviderSelector compact />
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-          {pendingToday > 0 && (
+        <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          {notLoggedIn && (
+            <span style={{ fontFamily: F, fontSize: '0.72rem', color: '#9ca3af', fontStyle: 'italic' }}>Connectez-vous pour sauvegarder</span>
+          )}
+          {pendingToday > 0 && !notLoggedIn && (
             <div style={{ padding: '0.4rem 1rem', borderRadius: '2rem', background: '#fef3c7', border: '1.5px solid #fde68a', fontFamily: F, fontSize: '0.72rem', fontWeight: 700, color: '#92400e' }}>
               ⚠️ {pendingToday} tâche{pendingToday > 1 ? 's' : ''} aujourd'hui
             </div>
           )}
-          <button onClick={() => setShowForm(!showForm)}
+          {!notLoggedIn && <button onClick={() => setShowForm(!showForm)}
             style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.4rem', borderRadius: '2rem', background: showForm ? '#f9f6f0' : '#064e3b', border: `1.5px solid ${showForm ? 'rgba(6,78,59,0.15)' : '#064e3b'}`, cursor: 'pointer', fontFamily: F, fontSize: '0.72rem', fontWeight: 700, color: showForm ? '#064e3b' : 'white' }}>
             {showForm ? <X size={14} /> : <Plus size={14} />}
             {showForm ? 'Annuler' : 'Nouvelle culture'}
-          </button>
+          </button>}
         </div>
       </div>
 
@@ -433,7 +431,7 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
           </div>
 
           {/* Ressources */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem', marginBottom: '1.2rem' }}>
             <div>
               <label style={lbl}>Nombre de travailleurs</label>
               <input type="number" min="1" value={form.workers_count} onChange={e => setForm(f => ({ ...f, workers_count: parseInt(e.target.value) || 1 }))} style={inp} />
@@ -470,7 +468,7 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
                 </button>
               </div>
             ))}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1.5fr auto', gap: '0.5rem', alignItems: 'end' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.5rem', alignItems: 'end' }}>
               <div>
                 <input value={newTreatment.name} onChange={e => setNewTreatment(t => ({ ...t, name: e.target.value }))}
                   placeholder="Nom du produit" style={inp} />
@@ -539,11 +537,11 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
         return (
           <Card key={cycle.id} style={{ marginBottom: '1.2rem' }}>
             {/* ── En-tête du cycle ── */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', cursor: 'pointer' }}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', cursor: 'pointer', flexWrap: 'nowrap', minWidth: 0 }}
               onClick={() => setExpandedCycle(isExpanded ? null : cycle.id)}>
 
               {/* Icône culture */}
-              <div style={{ width: '48px', height: '48px', borderRadius: '1rem', background: 'linear-gradient(135deg,#064e3b,#0a6644)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.6rem', flexShrink: 0 }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '0.8rem', background: 'linear-gradient(135deg,#064e3b,#0a6644)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>
                 🌿
               </div>
 
@@ -564,7 +562,7 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
                   )}
                 </div>
 
-                <div style={{ display: 'flex', gap: '1.2rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '0.7rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
                   <span style={{ fontFamily: F, fontSize: '0.72rem', color: '#9ca3af' }}>
                     📅 Début {new Date(cycle.start_date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
                   </span>
@@ -596,7 +594,7 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
               </div>
 
               {/* Actions */}
-              <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+              <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0, alignSelf: 'flex-start' }} onClick={e => e.stopPropagation()}>
                 <button onClick={() => generateAICalendar(cycle)} disabled={!!aiLoading}
                   title="Régénérer le planning IA"
                   style={{ width: '34px', height: '34px', borderRadius: '0.8rem', background: '#f9f6f0', border: '1.5px solid rgba(6,78,59,0.1)', cursor: aiLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#064e3b' }}>
@@ -617,7 +615,7 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
               <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(6,78,59,0.07)' }}>
 
                 {/* Onglets */}
-                <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '0.25rem' }}>
                   {[
                     { id: 'tasks',    label: `Tâches (${cycleTasks.filter(t => !t.done).length} en attente)` },
                     { id: 'planning', label: 'Calendrier IA' },
@@ -796,7 +794,7 @@ export default function CulturePlanning({ weather, forecast }: CulturePlanningPr
             <h3 style={{ fontFamily: FH, fontWeight: 800, color: '#064e3b', fontSize: '1rem', margin: 0 }}>
               Vue globale — Toutes les cultures
             </h3>
-            <div style={{ display: 'flex', gap: '0.4rem' }}>
+            <div style={{ display: 'flex', gap: '0.4rem', overflowX: 'auto' }}>
               {(['today', 'week', 'all'] as const).map(f => (
                 <button key={f} onClick={() => setTaskFilter(f)}
                   style={{ padding: '0.4rem 0.9rem', borderRadius: '2rem', border: 'none', cursor: 'pointer', fontFamily: F, fontSize: '0.68rem', fontWeight: 700,
