@@ -5,17 +5,23 @@ import { ShoppingCart, Menu, X } from 'lucide-react';
 
 const Logo = ({ light = false }: { light?: boolean }) => (
   <div className="flex items-center gap-3">
-    <svg width="44" height="44" viewBox="0 0 100 100" fill="none">
-      <rect width="100" height="100" rx="24" fill="#064e3b"/>
-      <path d="M30 50C30 38.9543 38.9543 30 50 30C61.0457 30 70 38.9543 70 50"
-        stroke="white" strokeWidth="10" strokeLinecap="round"/>
-      <circle cx="50" cy="50" r="10" fill="#10b981"/>
-      <path d="M50 50L70 70" stroke="white" strokeWidth="10" strokeLinecap="round"/>
-    </svg>
+    <img
+      src="/composte-logo.jpg"
+      alt="Composte AI"
+      style={{
+        width: '40px',
+        height: '40px',
+        borderRadius: '12px',
+        objectFit: 'cover',
+        border: light ? '2px solid rgba(255,255,255,0.2)' : '2px solid rgba(6,78,59,0.1)',
+      }}
+    />
     <span
       className="text-2xl font-bold tracking-tight"
       style={{
-        fontFamily: "'Poppins', sans-serif",
+        fontFamily: "'Outfit', sans-serif",
+        fontWeight: 900,
+        letterSpacing: '-0.02em',
         color: light ? 'white' : '#064e3b'
       }}
     >
@@ -25,13 +31,13 @@ const Logo = ({ light = false }: { light?: boolean }) => (
 );
 
 const navLinks = [
-  { path: '/',                label: '🏠 Home' },
-  { path: '/dashboard',       label: '📊 Dashboard' },
-  { path: '/soil-analysis',   label: '🌱 Sol' },
-  { path: '/disease-scanner', label: '🔍 Maladies' },
-  { path: '/ai-assistant',    label: '🤖 IA' },
-  { path: '/weather',         label: '🌤️ Météo' },
-  { path: '/market',          label: '📈 Marché' },
+  { path: '/',                label: 'Accueil' },
+  { path: '/dashboard',       label: 'Dashboard' },
+  { path: '/soil-analysis',   label: 'Sol' },
+  { path: '/disease-scanner', label: 'Maladies' },
+  { path: '/ai-assistant',    label: 'IA' },
+  { path: '/weather',         label: 'Météo' },
+  { path: '/market',          label: 'Marché' },
 ];
 
 const Navbar = () => {
