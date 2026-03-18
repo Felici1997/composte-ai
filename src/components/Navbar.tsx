@@ -25,7 +25,7 @@ const Logo = ({ light = false }: { light?: boolean }) => (
         color: light ? 'white' : '#064e3b'
       }}
     >
-      Composte
+      Composte AI
     </span>
   </div>
 );
