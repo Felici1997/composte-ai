@@ -1,54 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Composte AI - Agriculture Intelligente</title>
-    <meta name="description" content="Composte AI — Plateforme d'agriculture intelligente alimentée par l'IA pour des recommandations de cultures, analyses de sol et insights en temps réel." />
-    <meta name="author" content="Composte AI" />
-    <meta name="keywords" content="agriculture intelligente, IA farming, recommandations cultures, analyse sol, météo agricole, Composte AI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 
-    <link rel="icon" type="image/jpeg" href="/composte-logo.jpg" />
-    <link rel="apple-touch-icon" href="/composte-logo.jpg" />
+    <title>Composte AI — Plateforme Agricole</title>
+    <meta name="description" content="Plateforme agricole intelligente pour les producteurs du Congo Brazzaville." />
+    <meta name="author" content="Felici PFOUAPO ELENGA" />
 
-    <!-- Futuristic Typography System -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Satoshi Variable for Headings -->
-    <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Inter Variable for Body Text -->  
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- JetBrains Mono for Data/Code -->
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#022c22" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Composte AI" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
 
-    <meta property="og:title" content="Composte AI - Agriculture Intelligente" />
-    <meta property="og:description" content="Plateforme d'agriculture intelligente alimentée par l'IA — recommandations de cultures, analyses de sol et météo en temps réel." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <meta property="og:title" content="Composte AI" />
+    <meta property="og:description" content="Plateforme agricole IA pour les producteurs congolais." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/composte-logo.jpg" />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@composteai" />
-    <meta name="twitter:title" content="Composte AI" />
-    <meta name="twitter:description" content="Agriculture intelligente — recommandations IA pour cultiver mieux." />
-    <meta name="twitter:image" content="/composte-logo.jpg" />
-    
-    <!-- Single Page App for GitHub Pages -->
-    <script type="text/javascript">
-      // This script handles SPA routing for GitHub Pages and similar platforms
-      // It redirects from query parameters back to clean URLs
-      (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + decoded + l.hash
-          );
-        }
-      }(window.location))
-    </script>
+    <style>
+      html, body { overscroll-behavior: none; -webkit-overflow-scrolling: touch; margin: 0; }
+      body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+      }
+      * { touch-action: manipulation; }
+      button, [role="button"] { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+      #root:empty::after {
+        content: ''; display: block; width: 32px; height: 32px;
+        margin: 48vh auto 0; border: 3px solid #064e3b;
+        border-top-color: transparent; border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
   </head>
-
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
