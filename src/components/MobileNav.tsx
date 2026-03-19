@@ -1,107 +1,71 @@
 /**
- * MobileNav.tsx
- * Barre de navigation bottom — style app native (iOS/Android)
- * Remplace la Navbar desktop sur mobile
+ * MobileNav.tsx — Style app native, inspiré Composte Agri Flutter
  */
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-  Home, LayoutDashboard, Microscope,
-  CloudSun, ShoppingCart, User, Leaf, Bot
-} from 'lucide-react';
+import { Home, ShoppingBag, Clock, User } from 'lucide-react';
 
-const F  = "'Poppins', sans-serif";
-const FH = "'Outfit', sans-serif";
+const F = "'DM Sans', 'Poppins', sans-serif";
 
-const TAB_ITEMS = [
-  { path: '/dashboard',       icon: Home,         label: 'Accueil'   },
-  { path: '/disease-scanner', icon: Microscope,   label: 'Scanner'   },
-  { path: '/weather',         icon: CloudSun,     label: 'Météo'     },
-  { path: '/market',          icon: ShoppingCart, label: 'Marché'    },
-  { path: '/profile',         icon: User,         label: 'Profil'    },
+const TABS = [
+  { path: '/dashboard',  icon: Home,        label: 'Accueil'    },
+  { path: '/market',     icon: ShoppingBag, label: 'Marché'     },
+  { path: '/weather',    icon: Clock,       label: 'Activités'  },
+  { path: '/profile',    icon: User,        label: 'Compte'     },
 ];
 
-// Bouton central (action principale)
-const FAB_PATH = '/disease-scanner';
+// Icône feuille SVG pour "Marché" (comme dans l'app Flutter)
+const LeafIcon = ({ size = 22, color = '#666' }: { size?: number; color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 3c2.2 0 4.2.9 5.7 2.3L7.3 17.7C5.9 16.2 5 14.2 5 12c0-3.9 3.1-7 7-7zm0 14c-2.2 0-4.2-.9-5.7-2.3l10.4-10.4C18.1 7.8 19 9.8 19 12c0 3.9-3.1 7-7 7z" fill={color}/>
+  </svg>
+);
 
 export default function MobileNav() {
   const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path ||
+    (path === '/dashboard' && location.pathname === '/');
 
-  // Pages où la nav est cachée
-  const HIDDEN_ON = ['/auth', '/'];
+  const HIDDEN_ON = ['/auth'];
   if (HIDDEN_ON.includes(location.pathname)) return null;
 
   return (
     <>
-      {/* Spacer pour éviter que le contenu soit caché derrière la nav */}
-      <div style={{ height: '72px' }} />
-
-      {/* Barre de navigation */}
+      <div style={{ height: '64px' }} />
       <nav style={{
-        position: 'fixed',
-        bottom: 0, left: 0, right: 0,
-        zIndex: 1000,
-        background: 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(6,78,59,0.08)',
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000,
+        background: '#fff',
+        borderTop: '1px solid #E8E8E8',
         paddingBottom: 'env(safe-area-inset-bottom)',
-        boxShadow: '0 -4px 24px rgba(6,78,59,0.08)',
       }}>
         <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-around',
-          padding: '0.5rem 0.5rem 0.25rem',
-          maxWidth: '480px',
-          margin: '0 auto',
+          display: 'flex', alignItems: 'center',
+          maxWidth: '480px', margin: '0 auto',
         }}>
-          {TAB_ITEMS.map(({ path, icon: Icon, label }) => {
+          {TABS.map(({ path, icon: Icon, label }, i) => {
             const active = isActive(path);
+            // Icône feuille spéciale pour Marché
+            const isMarche = label === 'Marché';
             return (
-              <Link
-                key={path}
-                to={path}
-                style={{ textDecoration: 'none', flex: 1 }}
-              >
+              <Link key={path} to={path} style={{ flex: 1, textDecoration: 'none' }}>
                 <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '0.2rem',
-                  padding: '0.4rem 0.25rem',
-                  borderRadius: '1rem',
-                  transition: 'all 0.15s',
-                  background: active ? 'rgba(6,78,59,0.07)' : 'transparent',
+                  display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center',
+                  padding: '10px 4px 8px',
+                  gap: '3px',
                 }}>
-                  <div style={{ position: 'relative' }}>
-                    <Icon
-                      size={22}
-                      style={{
-                        color: active ? '#064e3b' : '#9ca3af',
-                        transition: 'color 0.15s',
-                        strokeWidth: active ? 2.5 : 1.8,
-                      }}
-                    />
-                    {/* Indicateur actif */}
-                    {active && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '-3px', right: '-3px',
-                        width: '6px', height: '6px',
-                        borderRadius: '50%',
-                        background: '#10b981',
-                      }} />
-                    )}
-                  </div>
+                  {isMarche ? (
+                    <LeafIcon size={23} color={active ? '#1B5E3B' : '#9E9E9E'} />
+                  ) : (
+                    <Icon size={23} color={active ? '#1B5E3B' : '#9E9E9E'}
+                      strokeWidth={active ? 2.5 : 1.8} />
+                  )}
                   <span style={{
                     fontFamily: F,
-                    fontSize: '0.58rem',
-                    fontWeight: active ? 700 : 500,
-                    color: active ? '#064e3b' : '#9ca3af',
-                    letterSpacing: '0.02em',
-                    lineHeight: 1,
+                    fontSize: '11px',
+                    fontWeight: active ? 600 : 400,
+                    color: active ? '#1B5E3B' : '#9E9E9E',
+                    letterSpacing: '0.01em',
                   }}>
                     {label}
                   </span>
