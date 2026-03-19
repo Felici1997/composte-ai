@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LocationProvider } from "@/contexts/LocationContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MobileAppBanner from '@/components/MobileAppBanner';
 import Navbar from "@/components/Navbar";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
@@ -28,6 +29,7 @@ const App = () => (
       <TooltipProvider>
       <Toaster />
       <Sonner />
+      <MobileAppBanner />
       <BrowserRouter 
         future={{ 
           v7_startTransition: true,
