@@ -1,238 +1,237 @@
 /**
- * MobileHome.tsx
- * Page d'accueil mobile — style app native
- * Tableau de bord personnalisé avec accès rapide aux fonctionnalités
+ * MobileHome.tsx — Page d'accueil mobile style app native
+ * Inspiré Composte Agri Flutter : fond gris, cards blanches, typo franche
  */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useLocationContext } from '@/contexts/LocationContext';
-import {
-  Microscope, CloudSun, ShoppingCart, Leaf,
-  Bot, ChevronRight, MapPin, TrendingUp,
-  Droplets, Wind, Zap, Bell, Calendar,
-  ArrowUpRight, Sprout
-} from 'lucide-react';
+import { ChevronRight, TrendingUp, TrendingDown, MapPin, Droplets, Wind } from 'lucide-react';
 
-const F  = "'Poppins', sans-serif";
-const FH = "'Outfit', sans-serif";
+const F  = "'DM Sans', 'Poppins', sans-serif";
+const FH = "'DM Sans', 'Outfit', sans-serif";
+const GREEN = '#1B5E3B';
+const GREEN_LIGHT = '#E8F5EE';
+const BG = '#F2F4F7';
+const CARD = '#FFFFFF';
 
 const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY || 'bdc7bc29f0d1be26b9ba457903ad9ec5';
 
-/* ─── ACTIONS RAPIDES ─── */
-const QUICK_ACTIONS = [
-  {
-    path: '/disease-scanner',
-    icon: <Microscope size={26} />,
-    label: 'Scanner',
-    desc: 'Détecter une maladie',
-    color: '#064e3b',
-    bg: 'linear-gradient(135deg, #064e3b, #0a6644)',
-    light: '#e8f5f0',
-  },
-  {
-    path: '/weather',
-    icon: <CloudSun size={26} />,
-    label: 'Météo',
-    desc: 'Prévisions agricoles',
-    color: '#1d4ed8',
-    bg: 'linear-gradient(135deg, #1d4ed8, #2563eb)',
-    light: '#eff6ff',
-  },
-  {
-    path: '/soil-analysis',
-    icon: <Leaf size={26} />,
-    label: 'Sol',
-    desc: 'Analyser votre sol',
-    color: '#a38a5e',
-    bg: 'linear-gradient(135deg, #a38a5e, #8b7355)',
-    light: '#fdf8f0',
-  },
-  {
-    path: '/market',
-    icon: <ShoppingCart size={26} />,
-    label: 'Marché',
-    desc: 'Prix des cultures',
-    color: '#7c3aed',
-    bg: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
-    light: '#f5f3ff',
-  },
-  {
-    path: '/recommendations',
-    icon: <Sprout size={26} />,
-    label: 'Conseils',
-    desc: 'Recommandations IA',
-    color: '#059669',
-    bg: 'linear-gradient(135deg, #059669, #047857)',
-    light: '#ecfdf5',
-  },
-  {
-    path: '/ai-assistant',
-    icon: <Bot size={26} />,
-    label: 'Assistant',
-    desc: 'Poser une question',
-    color: '#dc2626',
-    bg: 'linear-gradient(135deg, #dc2626, #b91c1c)',
-    light: '#fef2f2',
-  },
+/* ─── SLIDES HERO (bannières produits) ─── */
+const HERO_SLIDES = [
+  { label: 'Scanner maladies',   sub: 'Diagnostiquez vos plantes en secondes',  emoji: '🔬', color: '#1B5E3B', path: '/disease-scanner' },
+  { label: 'Météo agricole',     sub: 'Prévisions pour votre zone',              emoji: '🌤️', color: '#1565C0', path: '/weather' },
+  { label: 'Analyse de sol',     sub: 'pH, nutriments, humidité',                emoji: '🌍', color: '#4E342E', path: '/soil-analysis' },
 ];
 
-const MARKET_PRICES = [
-  { name: 'Manioc',  price: '850',  unit: 'FCFA/kg', trend: '+3%',  up: true  },
-  { name: 'Maïs',   price: '1 200', unit: 'FCFA/kg', trend: '-2%',  up: false },
-  { name: 'Tomate', price: '2 500', unit: 'FCFA/kg', trend: '+8%',  up: true  },
-  { name: 'Arachide',price: '1 800',unit: 'FCFA/kg', trend: '+1%',  up: true  },
+/* ─── SERVICES (comme "Nos Services" dans l'app Flutter) ─── */
+const SERVICES = [
+  { label: 'Scanner',    emoji: '🔬', path: '/disease-scanner' },
+  { label: 'Météo',      emoji: '🌤️', path: '/weather' },
+  { label: 'Sol',        emoji: '🌱', path: '/soil-analysis' },
+  { label: 'Conseils',   emoji: '💡', path: '/recommendations' },
+  { label: 'IA',         emoji: '🤖', path: '/ai-assistant' },
+  { label: 'Marché',     emoji: '📊', path: '/market' },
 ];
 
+/* ─── PRIX MARCHÉ ─── */
+const MARKET_DATA = [
+  { name: 'Concombre', price: '1 500', unit: 'FCFA/KG', trend: +3,  emoji: '🥒', category: 'Légumes' },
+  { name: 'Manioc',    price: '850',   unit: 'FCFA/KG', trend: -2,  emoji: '🌿', category: 'Tubercules' },
+  { name: 'Tomate',    price: '2 200', unit: 'FCFA/KG', trend: +8,  emoji: '🍅', category: 'Légumes' },
+  { name: 'Arachide',  price: '1 800', unit: 'FCFA/KG', trend: +1,  emoji: '🥜', category: 'Légumineuses' },
+  { name: 'Maïs',      price: '1 200', unit: 'FCFA/KG', trend: -4,  emoji: '🌽', category: 'Céréales' },
+  { name: 'Banane',    price: '500',   unit: 'FCFA/KG', trend: +2,  emoji: '🍌', category: 'Fruits' },
+];
+
+/* ─── COMPOSANT PRODUIT CARD ─── */
+function ProductCard({ item }: { item: typeof MARKET_DATA[0] }) {
+  const up = item.trend > 0;
+  return (
+    <div style={{
+      background: CARD, borderRadius: 16,
+      padding: '12px',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+      minWidth: '140px',
+    }}>
+      {/* Bouton En détail */}
+      <div style={{ marginBottom: '6px' }}>
+        <span style={{
+          display: 'inline-block',
+          background: GREEN, color: 'white',
+          borderRadius: 20, padding: '3px 10px',
+          fontFamily: F, fontWeight: 600, fontSize: '11px',
+        }}>
+          En détail
+        </span>
+      </div>
+      {/* Emoji produit */}
+      <div style={{ fontSize: '40px', textAlign: 'center', margin: '8px 0' }}>
+        {item.emoji}
+      </div>
+      {/* Infos */}
+      <div style={{ fontFamily: F, fontSize: '11px', color: GREEN, fontWeight: 600 }}>
+        {item.category}
+      </div>
+      <div style={{ fontFamily: FH, fontWeight: 700, fontSize: '14px', color: '#1a1a1a', marginTop: '2px' }}>
+        {item.name}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px' }}>
+        <span style={{ fontFamily: F, fontWeight: 700, fontSize: '13px', color: '#1a1a1a' }}>
+          {item.price} {item.unit.split('/')[1] ? 'F/' + item.unit.split('/')[1] : 'FCFA'}
+        </span>
+        <span style={{
+          display: 'flex', alignItems: 'center', gap: '2px',
+          fontFamily: F, fontWeight: 700, fontSize: '11px',
+          color: up ? '#2E7D32' : '#C62828',
+        }}>
+          {up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+          {Math.abs(item.trend)}%
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── COMPOSANT PRINCIPAL ─── */
 export default function MobileHome() {
   const { selectedLocationName, selectedCoordinates, hasLocation } = useLocationContext();
-  const [user, setUser]       = useState<any>(null);
-  const [weather, setWeather] = useState<any>(null);
-  const [stats, setStats]     = useState({ scans: 0, recs: 0 });
-  const [greeting, setGreeting] = useState('Bonjour');
+  const [user, setUser]         = useState<any>(null);
+  const [weather, setWeather]   = useState<any>(null);
+  const [slideIdx, setSlideIdx] = useState(0);
+
   const now = new Date();
+  const h   = now.getHours();
+  const greeting = h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir';
 
   useEffect(() => {
-    const h = now.getHours();
-    setGreeting(h < 12 ? 'Bonjour' : h < 18 ? 'Bon après-midi' : 'Bonsoir');
-
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      setUser(session.user);
-      // Charger stats
-      Promise.all([
-        supabase.from('disease_detections').select('id', { count: 'exact' }).eq('user_id', session.user.id),
-        supabase.from('crop_recommendations').select('id', { count: 'exact' }).eq('user_id', session.user.id),
-      ]).then(([d, r]) => setStats({ scans: d.count || 0, recs: r.count || 0 }));
+      setUser(session?.user ?? null);
     });
   }, []);
 
   useEffect(() => {
     if (!selectedCoordinates) return;
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${selectedCoordinates.lat}&lon=${selectedCoordinates.lon}&appid=${API_KEY}&units=metric&lang=fr`)
-      .then(r => r.json())
-      .then(setWeather)
-      .catch(() => {});
+      .then(r => r.json()).then(setWeather).catch(() => {});
   }, [selectedCoordinates]);
 
-  const firstName = user?.email?.split('@')[0] || 'Agriculteur';
-  const dateStr   = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  // Auto-slide
+  useEffect(() => {
+    const t = setInterval(() => setSlideIdx(i => (i + 1) % HERO_SLIDES.length), 3500);
+    return () => clearInterval(t);
+  }, []);
+
+  const firstName = user?.email?.split('@')[0] || null;
   const temp      = weather ? Math.round(weather.main?.temp) : null;
-  const humidity  = weather?.main?.humidity;
-  const weatherDesc = weather?.weather?.[0]?.description || '';
-  const weatherIcon = weatherDesc.includes('pluie') ? '🌧️' : weatherDesc.includes('nuage') ? '⛅' : weatherDesc.includes('orage') ? '⛈️' : '☀️';
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f2f4f7', fontFamily: F, paddingBottom: '1rem' }}>
+    <div style={{ background: BG, minHeight: '100vh', fontFamily: F, paddingBottom: '16px' }}>
 
-      {/* ── HERO HEADER ── */}
-      <div style={{
-        background: 'linear-gradient(160deg, #011a12 0%, #022c22 50%, #064e3b 100%)',
-        padding: '1.5rem 1.2rem 3rem',
-        position: 'relative', overflow: 'hidden',
-      }}>
-        {/* Cercles décoratifs */}
-        <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(16,185,129,0.08)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: '-20px', left: '-30px', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(163,138,94,0.1)', pointerEvents: 'none' }} />
-
-        {/* Salutation */}
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <p style={{ fontFamily: F, fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', marginBottom: '0.2rem', textTransform: 'capitalize' }}>
-            {dateStr}
-          </p>
-          <h1 style={{ fontFamily: FH, fontWeight: 900, fontSize: '1.6rem', color: 'white', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '0.3rem' }}>
-            {greeting},<br />
-            <span style={{ color: '#a38a5e' }}>{firstName} 👋</span>
-          </h1>
-
-          {/* Localité */}
-          {hasLocation && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.6rem' }}>
-              <MapPin size={11} style={{ color: '#10b981' }} />
-              <span style={{ fontFamily: F, fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)' }}>{selectedLocationName}</span>
-            </div>
-          )}
+      {/* ── SALUTATION ── */}
+      <div style={{ padding: '4px 16px 12px', background: '#fff' }}>
+        <div style={{ fontFamily: F, fontSize: '13px', color: '#757575' }}>
+          {greeting}{firstName ? `, ${firstName}` : ''} 👋
         </div>
+        {hasLocation && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+            <MapPin size={12} color={GREEN} />
+            <span style={{ fontFamily: F, fontSize: '12px', color: GREEN, fontWeight: 600 }}>
+              {selectedLocationName}
+            </span>
+          </div>
+        )}
+        {weather && temp !== null && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '6px' }}>
+            <span style={{ fontFamily: FH, fontWeight: 700, fontSize: '24px', color: '#1a1a1a' }}>
+              {temp}°C
+            </span>
+            <span style={{ fontFamily: F, fontSize: '12px', color: '#757575', textTransform: 'capitalize' }}>
+              {weather.weather?.[0]?.description}
+            </span>
+            <span style={{ fontFamily: F, fontSize: '12px', color: '#757575', display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <Droplets size={12} color="#1565C0" /> {weather.main?.humidity}%
+            </span>
+            <span style={{ fontFamily: F, fontSize: '12px', color: '#757575', display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <Wind size={12} color="#546E7A" /> {Math.round((weather.wind?.speed || 0) * 3.6)}km/h
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* ── CARTE MÉTÉO + STATS (overlap sur le hero) ── */}
-      <div style={{ padding: '0 1rem', marginTop: '-1.5rem', position: 'relative', zIndex: 10 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: weather ? '1fr 1fr' : '1fr', gap: '0.75rem' }}>
-
-          {/* Météo */}
-          {weather && (
-            <div style={{ borderRadius: '1.5rem', background: 'linear-gradient(135deg, #1d4ed8, #2563eb)', padding: '1.2rem', boxShadow: '0 8px 24px rgba(29,78,216,0.3)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <div style={{ fontFamily: FH, fontWeight: 900, fontSize: '2.2rem', color: 'white', lineHeight: 1 }}>{temp}°</div>
-                  <div style={{ fontFamily: F, fontSize: '0.65rem', color: 'rgba(255,255,255,0.6)', marginTop: '0.2rem', textTransform: 'capitalize' }}>{weatherDesc}</div>
-                </div>
-                <span style={{ fontSize: '2.2rem' }}>{weatherIcon}</span>
-              </div>
-              <div style={{ display: 'flex', gap: '0.6rem', marginTop: '0.8rem' }}>
-                <span style={{ fontFamily: F, fontSize: '0.62rem', color: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                  <Droplets size={10} /> {humidity}%
-                </span>
-                <span style={{ fontFamily: F, fontSize: '0.62rem', color: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                  <Wind size={10} /> {Math.round((weather.wind?.speed || 0) * 3.6)} km/h
-                </span>
-              </div>
+      {/* ── HERO SLIDER ── */}
+      <div style={{ padding: '12px 16px 0' }}>
+        <Link to={HERO_SLIDES[slideIdx].path} style={{ textDecoration: 'none', display: 'block' }}>
+          <div style={{
+            borderRadius: 16, overflow: 'hidden',
+            background: HERO_SLIDES[slideIdx].color,
+            padding: '24px 20px 20px',
+            position: 'relative', minHeight: '150px',
+            display: 'flex', alignItems: 'flex-end',
+            justifyContent: 'space-between',
+          }}>
+            {/* Cercle déco */}
+            <div style={{
+              position: 'absolute', top: -30, right: -30,
+              width: 140, height: 140, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.08)',
+            }} />
+            <div style={{
+              position: 'absolute', top: 20, right: 20,
+              fontSize: '64px', opacity: 0.9,
+            }}>
+              {HERO_SLIDES[slideIdx].emoji}
             </div>
-          )}
-
-          {/* Stats */}
-          <div style={{ borderRadius: '1.5rem', background: 'white', padding: '1.2rem', boxShadow: '0 4px 20px rgba(6,78,59,0.08)' }}>
-            <div style={{ fontFamily: F, fontSize: '0.65rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.6rem' }}>Mon activité</div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <div>
-                <div style={{ fontFamily: FH, fontWeight: 900, fontSize: '1.6rem', color: '#064e3b', lineHeight: 1 }}>{stats.scans}</div>
-                <div style={{ fontFamily: F, fontSize: '0.62rem', color: '#9ca3af' }}>Scans</div>
+            <div>
+              <div style={{ fontFamily: FH, fontWeight: 700, fontSize: '22px', color: '#fff', lineHeight: 1.2 }}>
+                {HERO_SLIDES[slideIdx].label}
               </div>
-              <div style={{ width: '1px', background: '#e5e7eb' }} />
-              <div>
-                <div style={{ fontFamily: FH, fontWeight: 900, fontSize: '1.6rem', color: '#a38a5e', lineHeight: 1 }}>{stats.recs}</div>
-                <div style={{ fontFamily: F, fontSize: '0.62rem', color: '#9ca3af' }}>Conseils</div>
+              <div style={{ fontFamily: F, fontSize: '13px', color: 'rgba(255,255,255,0.75)', marginTop: '4px' }}>
+                {HERO_SLIDES[slideIdx].sub}
               </div>
             </div>
           </div>
+        </Link>
+
+        {/* Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginTop: '10px' }}>
+          {HERO_SLIDES.map((_, i) => (
+            <button key={i} onClick={() => setSlideIdx(i)} style={{
+              width: i === slideIdx ? 18 : 7, height: 7,
+              borderRadius: 4, border: 'none', cursor: 'pointer', padding: 0,
+              background: i === slideIdx ? GREEN : '#C8C8C8',
+              transition: 'all 0.25s',
+            }} />
+          ))}
         </div>
       </div>
 
-      {/* ── ACTIONS RAPIDES ── */}
-      <div style={{ padding: '1.5rem 1rem 0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h2 style={{ fontFamily: FH, fontWeight: 800, color: '#1a2332', fontSize: '1rem', margin: 0 }}>Fonctionnalités</h2>
+      {/* ── NOS SERVICES ── */}
+      <div style={{ padding: '20px 16px 0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontFamily: FH, fontWeight: 700, fontSize: '17px', color: '#1a1a1a' }}>
+            Nos Services
+          </span>
+          <Link to="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '2px' }}>
+            <span style={{ fontFamily: F, fontSize: '13px', color: GREEN, fontWeight: 600 }}>Voir plus</span>
+            <ChevronRight size={15} color={GREEN} />
+          </Link>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
-          {QUICK_ACTIONS.map((action, i) => (
-            <Link key={i} to={action.path} style={{ textDecoration: 'none' }}>
+        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
+          {SERVICES.map((s, i) => (
+            <Link key={i} to={s.path} style={{ textDecoration: 'none', flexShrink: 0 }}>
               <div style={{
-                borderRadius: '1.3rem',
-                padding: '1rem 0.75rem',
+                background: CARD, borderRadius: 14,
+                padding: '16px 14px',
+                minWidth: '90px',
                 textAlign: 'center',
-                background: 'white',
-                boxShadow: '0 2px 12px rgba(6,78,59,0.06)',
-                transition: 'transform 0.15s',
-                cursor: 'pointer',
-                border: '1px solid rgba(6,78,59,0.05)',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+                border: '1px solid #F0F0F0',
               }}>
-                <div style={{
-                  width: '48px', height: '48px',
-                  borderRadius: '1rem',
-                  background: action.bg,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  margin: '0 auto 0.6rem',
-                  color: 'white',
-                  boxShadow: `0 4px 14px ${action.color}35`,
-                }}>
-                  {action.icon}
-                </div>
-                <div style={{ fontFamily: FH, fontWeight: 700, fontSize: '0.75rem', color: '#1a2332', lineHeight: 1.2, marginBottom: '0.2rem' }}>
-                  {action.label}
-                </div>
-                <div style={{ fontFamily: F, fontSize: '0.6rem', color: '#9ca3af', lineHeight: 1.3 }}>
-                  {action.desc}
+                <div style={{ fontSize: '28px', marginBottom: '6px' }}>{s.emoji}</div>
+                <div style={{ fontFamily: F, fontSize: '12px', fontWeight: 500, color: '#424242' }}>
+                  {s.label}
                 </div>
               </div>
             </Link>
@@ -240,75 +239,50 @@ export default function MobileHome() {
         </div>
       </div>
 
-      {/* ── PRIX DU MARCHÉ ── */}
-      <div style={{ padding: '1.5rem 1rem 0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h2 style={{ fontFamily: FH, fontWeight: 800, color: '#1a2332', fontSize: '1rem', margin: 0 }}>Prix du marché</h2>
-          <Link to="/market" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem', fontFamily: F, fontSize: '0.7rem', color: '#10b981', fontWeight: 600 }}>
-            Tout voir <ChevronRight size={13} />
+      {/* ── NOS PRODUITS / PRIX MARCHÉ ── */}
+      <div style={{ padding: '20px 16px 0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontFamily: FH, fontWeight: 700, fontSize: '17px', color: '#1a1a1a' }}>
+            Nos Produits
+          </span>
+          <Link to="/market" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '2px' }}>
+            <span style={{ fontFamily: F, fontSize: '13px', color: GREEN, fontWeight: 600 }}>Voir plus</span>
+            <ChevronRight size={15} color={GREEN} />
           </Link>
         </div>
 
-        <div style={{ background: 'white', borderRadius: '1.5rem', overflow: 'hidden', boxShadow: '0 2px 12px rgba(6,78,59,0.06)', border: '1px solid rgba(6,78,59,0.05)' }}>
-          {MARKET_PRICES.map((item, i) => (
-            <div key={i} style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '0.9rem 1.2rem',
-              borderBottom: i < MARKET_PRICES.length - 1 ? '1px solid #f3f4f6' : 'none',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '0.8rem', background: '#f9f6f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>
-                  {item.name === 'Manioc' ? '🌿' : item.name === 'Maïs' ? '🌽' : item.name === 'Tomate' ? '🍅' : '🥜'}
-                </div>
-                <div>
-                  <div style={{ fontFamily: F, fontWeight: 600, fontSize: '0.82rem', color: '#1a2332' }}>{item.name}</div>
-                  <div style={{ fontFamily: F, fontSize: '0.62rem', color: '#9ca3af' }}>{item.unit}</div>
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: FH, fontWeight: 800, fontSize: '0.9rem', color: '#1a2332' }}>{item.price}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', justifyContent: 'flex-end' }}>
-                  <TrendingUp size={10} style={{ color: item.up ? '#10b981' : '#ef4444', transform: item.up ? 'none' : 'rotate(180deg)' }} />
-                  <span style={{ fontFamily: F, fontSize: '0.62rem', fontWeight: 700, color: item.up ? '#10b981' : '#ef4444' }}>{item.trend}</span>
-                </div>
-              </div>
-            </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+          {MARKET_DATA.slice(0, 4).map((item, i) => (
+            <Link key={i} to="/market" style={{ textDecoration: 'none' }}>
+              <ProductCard item={item} />
+            </Link>
           ))}
         </div>
       </div>
 
-      {/* ── ALERTE RAPIDE ── */}
-      <div style={{ padding: '1.5rem 1rem 0' }}>
-        <div style={{ borderRadius: '1.5rem', background: 'linear-gradient(135deg, #022c22, #064e3b)', padding: '1.2rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ width: '44px', height: '44px', borderRadius: '1rem', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Zap size={20} style={{ color: '#a38a5e' }} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: FH, fontWeight: 700, color: 'white', fontSize: '0.88rem', marginBottom: '0.2rem' }}>
-              Scanner une plante malade
-            </div>
-            <div style={{ fontFamily: F, fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.4 }}>
-              Prenez une photo et l'IA identifie la maladie en secondes
-            </div>
-          </div>
-          <Link to="/disease-scanner" style={{ textDecoration: 'none', flexShrink: 0 }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <ArrowUpRight size={16} style={{ color: 'white' }} />
-            </div>
-          </Link>
-        </div>
-      </div>
-
-      {/* ── LIEN PROFIL si non connecté ── */}
+      {/* ── CTA CONNEXION (si non connecté) ── */}
       {!user && (
-        <div style={{ padding: '1.5rem 1rem 0' }}>
-          <div style={{ borderRadius: '1.5rem', background: 'white', padding: '1.2rem 1.5rem', border: '1.5px solid rgba(163,138,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ padding: '20px 16px 0' }}>
+          <div style={{
+            background: CARD, borderRadius: 16,
+            padding: '16px',
+            border: '1px solid #E8E8E8',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          }}>
             <div>
-              <div style={{ fontFamily: FH, fontWeight: 700, color: '#064e3b', fontSize: '0.88rem' }}>Créez votre compte</div>
-              <div style={{ fontFamily: F, fontSize: '0.7rem', color: '#9ca3af', marginTop: '0.1rem' }}>Sauvegardez vos analyses et accédez à plus de fonctionnalités</div>
+              <div style={{ fontFamily: FH, fontWeight: 700, fontSize: '15px', color: '#1a1a1a' }}>
+                Créez votre compte
+              </div>
+              <div style={{ fontFamily: F, fontSize: '12px', color: '#757575', marginTop: '2px' }}>
+                Accédez à toutes les fonctionnalités
+              </div>
             </div>
             <Link to="/auth" style={{ textDecoration: 'none' }}>
-              <div style={{ padding: '0.6rem 1.2rem', borderRadius: '2rem', background: '#064e3b', fontFamily: F, fontSize: '0.7rem', fontWeight: 700, color: 'white' }}>
+              <div style={{
+                background: GREEN, color: '#fff',
+                borderRadius: 24, padding: '9px 18px',
+                fontFamily: F, fontWeight: 700, fontSize: '13px',
+              }}>
                 Connexion
               </div>
             </Link>
