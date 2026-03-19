@@ -1,136 +1,131 @@
 /**
- * MobileHeader.tsx
- * En-tête compact pour toutes les pages en mode mobile
- * Remplace les gros headers desktop
+ * MobileHeader.tsx — Style app native Composte
+ * Logo gauche + panier/notif droite sur accueil
+ * Retour + titre centré + label droite sur sous-pages
  */
 import React from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Bell } from 'lucide-react';
+import { ChevronLeft, ShoppingBag } from 'lucide-react';
 
-const F  = "'Poppins', sans-serif";
-const FH = "'Outfit', sans-serif";
+const F  = "'DM Sans', 'Poppins', sans-serif";
+const FH = "'DM Sans', 'Outfit', sans-serif";
 
-const PAGE_TITLES: Record<string, { title: string; subtitle?: string; back?: boolean }> = {
-  '/dashboard':       { title: 'Bonjour 👋',        subtitle: 'Composte AI' },
-  '/disease-scanner': { title: 'Scanner',             subtitle: 'Diagnostic maladie', back: false },
-  '/weather':         { title: 'Météo',               subtitle: 'Conditions agricoles', back: false },
-  '/market':          { title: 'Marché',              subtitle: 'Prix des cultures', back: false },
-  '/profile':         { title: 'Mon profil',          back: true },
-  '/soil-analysis':   { title: 'Analyse de sol',      back: true },
-  '/recommendations': { title: 'Recommandations',     back: true },
-  '/ai-assistant':    { title: 'Assistant IA',         back: true },
+// Logo SVG Composte compact
+const Logo = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <div style={{
+      width: 38, height: 38, borderRadius: 10,
+      background: '#1B5E3B',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M12 3C8.5 3 5.5 5.5 5 9c-.5 3.5 1.5 6.5 4.5 7.8V20h5v-3.2C17 15.5 19 12.5 18.5 9 18 5.5 15.5 3 12 3z" fill="white" opacity="0.9"/>
+        <path d="M12 3v10M9 8l3-5 3 5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    </div>
+    <span style={{
+      fontFamily: FH, fontWeight: 700, fontSize: '17px',
+      color: '#1a1a1a', letterSpacing: '0.5px',
+    }}>
+      COMPOSTE
+    </span>
+  </div>
+);
+
+// Badge panier
+const CartBadge = ({ count = 0 }: { count?: number }) => (
+  <div style={{ position: 'relative' }}>
+    <div style={{
+      width: 40, height: 40, borderRadius: 12,
+      background: '#1B5E3B',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <ShoppingBag size={20} color="white" />
+    </div>
+    {count >= 0 && (
+      <div style={{
+        position: 'absolute', top: -4, right: -4,
+        width: 20, height: 20, borderRadius: '50%',
+        background: '#E53935', color: 'white',
+        fontFamily: F, fontWeight: 700, fontSize: '11px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        {count}
+      </div>
+    )}
+  </div>
+);
+
+const SUB_PAGES: Record<string, string> = {
+  '/soil-analysis':   'Analyse Sol',
+  '/disease-scanner': 'Scanner',
+  '/recommendations': 'Conseils',
+  '/ai-assistant':    'Assistant IA',
+  '/profile':         'Compte',
+  '/weather':         'Météo',
+  '/market':          'Marché',
 };
 
-interface Props {
-  userName?: string;
-}
+// Pages qui affichent le logo (accueil)
+const LOGO_PAGES = ['/', '/dashboard'];
 
-export default function MobileHeader({ userName }: Props) {
+export default function MobileHeader() {
   const location = useLocation();
   const navigate  = useNavigate();
-  const config    = PAGE_TITLES[location.pathname];
+  const path      = location.pathname;
 
-  if (!config) return null;
+  if (path === '/auth') return null;
 
-  const title = config.title === 'Bonjour 👋' && userName
-    ? `Bonjour, ${userName.split(' ')[0]} 👋`
-    : config.title;
+  const isHome   = LOGO_PAGES.includes(path);
+  const subTitle = SUB_PAGES[path];
 
   return (
     <div style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 100,
-      background: 'rgba(255,255,255,0.95)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(6,78,59,0.07)',
+      position: 'sticky', top: 0, zIndex: 500,
+      background: '#fff',
+      borderBottom: isHome ? 'none' : '1px solid #F0F0F0',
       paddingTop: 'env(safe-area-inset-top)',
     }}>
       <div style={{
-        display: 'flex',
-        alignItems: 'center',
+        display: 'flex', alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0.85rem 1.2rem',
-        maxWidth: '480px',
-        margin: '0 auto',
+        padding: isHome ? '14px 16px 10px' : '10px 16px',
+        maxWidth: '480px', margin: '0 auto',
+        minHeight: 56,
       }}>
-        {/* Gauche : retour ou logo */}
-        <div style={{ width: '36px' }}>
-          {config.back ? (
-            <button
-              onClick={() => navigate(-1)}
-              style={{
-                width: '36px', height: '36px',
-                borderRadius: '50%',
-                background: '#f9f6f0',
-                border: '1px solid rgba(6,78,59,0.1)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: 'pointer',
-              }}
-            >
-              <ChevronLeft size={18} style={{ color: '#064e3b' }} />
-            </button>
-          ) : (
-            <Link to="/dashboard">
-              <div style={{
-                width: '36px', height: '36px',
-                borderRadius: '10px',
-                background: '#064e3b',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '1.1rem',
-              }}>
-                🌿
-              </div>
-            </Link>
-          )}
-        </div>
 
-        {/* Centre : titre */}
-        <div style={{ textAlign: 'center', flex: 1 }}>
-          <div style={{
-            fontFamily: FH,
-            fontWeight: 800,
-            fontSize: '1rem',
-            color: '#064e3b',
-            letterSpacing: '-0.01em',
-            lineHeight: 1.2,
-          }}>
-            {title}
-          </div>
-          {config.subtitle && (
-            <div style={{
-              fontFamily: F,
-              fontSize: '0.65rem',
-              color: '#9ca3af',
-              marginTop: '0.05rem',
+        {isHome ? (
+          // ACCUEIL : logo + panier
+          <>
+            <Logo />
+            <CartBadge count={0} />
+          </>
+        ) : (
+          // SOUS-PAGE : retour + titre centré + label droit
+          <>
+            <button onClick={() => navigate(-1)} style={{
+              width: 38, height: 38, borderRadius: '50%',
+              background: '#1B5E3B', border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
             }}>
-              {config.subtitle}
-            </div>
-          )}
-        </div>
+              <ChevronLeft size={20} color="white" strokeWidth={2.5} />
+            </button>
 
-        {/* Droite : actions */}
-        <div style={{ width: '36px', display: 'flex', justifyContent: 'flex-end' }}>
-          <button style={{
-            width: '36px', height: '36px',
-            borderRadius: '50%',
-            background: '#f9f6f0',
-            border: '1px solid rgba(6,78,59,0.1)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer',
-            position: 'relative',
-          }}>
-            <Bell size={16} style={{ color: '#064e3b' }} />
-            {/* Badge notification */}
-            <div style={{
-              position: 'absolute', top: '6px', right: '6px',
-              width: '7px', height: '7px',
-              borderRadius: '50%', background: '#ef4444',
-              border: '1.5px solid white',
-            }} />
-          </button>
-        </div>
+            <div style={{ flex: 1 }} />
+
+            {subTitle && (
+              <div style={{
+                padding: '6px 14px', borderRadius: 20,
+                background: '#E8F5EE',
+                fontFamily: F, fontWeight: 600, fontSize: '13px',
+                color: '#1B5E3B',
+              }}>
+                {subTitle}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
