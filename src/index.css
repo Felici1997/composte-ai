@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,7 +7,6 @@
 /* === COMPOSTE AI — Design System inspiré de demoparah.nakeas.com === */
 /* Palette : Forêt #064e3b · Argile #a38a5e · Parchemin #f9f6f0 · Emeraude #10b981 */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 @layer base {
   :root {
