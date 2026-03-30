@@ -111,5 +111,3 @@ Le projet sera accessible sur : **[http://localhost:5173/](http://localhost:5173
 ## 👨‍💻 Équipe
 
 * Nom de l’équipe : **Composte AI** 🌾
-
-Si tu veux, je peux aussi te proposer une **structure de dossier professionnelle pour ce projet (frontend + backend + IA)** 👍
