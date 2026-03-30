@@ -1,66 +1,69 @@
 
-# 🌱 AI-Powered Crop Recommendation System
+# 🌱 Système de recommandation de cultures alimenté par l’IA
 
-An intelligent platform that helps farmers make **smarter, data-driven decisions** by providing **personalized crop recommendations, yield predictions, and market insights** using **AI, Supabase, and real-time APIs**.
-
----
-
-## 📌 Features
-
-- ✅ **AI Crop Recommendations** – Suggests the most suitable crops based on soil, climate, and past crop history.  
-- ✅ **Yield & Profit Forecasting** – Predicts expected yield and profit margins.  
-- ✅ **Real-time Weather & Soil Analysis** – Fetches data from APIs and IoT-enabled sources.  
-- ✅ **Market Integration** – Connects with e-NAM & Agmarknet for price and demand insights.  
-- ✅ **Multilingual & Voice Support** – Local language + voice assistance for accessibility.  
-- ✅ **Offline Functionality** – Works in low/no internet connectivity zones.  
+Une plateforme intelligente qui aide les agriculteurs à prendre des **décisions plus éclairées et basées sur les données** en fournissant des **recommandations personnalisées de cultures, des prévisions de rendement et des analyses de marché** grâce à **l’IA, Supabase et des API en temps réel**.
 
 ---
 
-## 🛠️ Tech Stack
+## 📌 Fonctionnalités
 
-- **Frontend**: React + TailwindCSS  
-- **Backend**: Supabase (PostgreSQL + Authentication + API integration)  
-- **Database**: Supabase (Cloud-hosted PostgreSQL)  
-- **AI/ML Models**: Python (scikit-learn, TensorFlow) / Edge Functions  
-- **APIs Integrated**:  
-  - 🌦️ Weather API (OpenWeather/IMD)  
-  - 🌱 Soil Data (SoilGrids / IoT Sensors)  
-  - 📊 Market Prices (e-NAM, Agmarknet)  
+* ✅ **Recommandations de cultures par IA** – Propose les cultures les plus adaptées en fonction du sol, du climat et de l’historique agricole.
+* ✅ **Prévision des rendements et des profits** – Estime les rendements attendus et les marges bénéficiaires.
+* ✅ **Analyse en temps réel du climat et du sol** – Récupère les données via des API et des sources IoT.
+* ✅ **Intégration du marché** – Connexion avec e-NAM et Agmarknet pour obtenir des informations sur les prix et la demande.
+* ✅ **Support multilingue et vocal** – Assistance en langues locales + commande vocale pour plus d’accessibilité.
+* ✅ **Fonctionnement hors ligne** – Utilisable dans les zones à faible ou sans connexion Internet.
 
 ---
 
-## 🚀 How It Works
+## 🛠️ Stack technique
 
-1. **Input** – Farmer enters soil type, pH, location, and irrigation details.  
-2. **Processing** – Supabase stores data → AI model analyzes inputs + weather + soil data.  
-3. **Output** – Farmer receives crop suggestions with:  
-   - 📊 Suitability Score  
-   - 🌾 Expected Yield  
-   - 💰 Profit Estimate  
-   - ✅ Benefits & ⚠ Risks  
-4. **Decision Support** – Farmers can view detailed crop plans and market insights.  
+* **Frontend** : React + TailwindCSS
+* **Backend** : Supabase (PostgreSQL + Authentification + intégration d’API)
+* **Base de données** : Supabase (PostgreSQL hébergé dans le cloud)
+* **Modèles IA/ML** : Python (scikit-learn, TensorFlow) / Edge Functions
+* **APIs intégrées** :
+
+  * 🌦️ API météo (OpenWeather / IMD)
+  * 🌱 Données du sol (SoilGrids / capteurs IoT)
+  * 📊 Prix du marché (e-NAM, Agmarknet)
 
 ---
 
-## 📂 Project Setup
+## 🚀 Fonctionnement
 
-### 1️⃣ Clone Repository
+1. **Entrée** – L’agriculteur saisit le type de sol, le pH, la localisation et les informations d’irrigation.
+2. **Traitement** – Supabase stocke les données → le modèle IA analyse les entrées + météo + données du sol.
+3. **Sortie** – L’agriculteur reçoit des recommandations avec :
+
+   * 📊 Score d’adéquation
+   * 🌾 Rendement estimé
+   * 💰 Estimation des profits
+   * ✅ Avantages & ⚠ Risques
+4. **Aide à la décision** – Accès à des plans de culture détaillés et à des informations de marché.
+
+---
+
+## 📂 Installation du projet
+
+### 1️⃣ Cloner le dépôt
+
 ```bash
 git clone https://github.com/your-username/agri-vision-ai.git
 cd agri-vision-ai
-````
+```
 
-### 2️⃣ Install Dependencies
+### 2️⃣ Installer les dépendances
 
 ```bash
 npm install
 ```
 
-### 3️⃣ Setup Supabase
+### 3️⃣ Configurer Supabase
 
-* Create a [Supabase Project](https://supabase.com/).
-* Get your API keys (URL + anon/public key).
-* Add them in a `.env.local` file:
+* Créer un projet sur Supabase
+* Récupérer les clés API (URL + clé publique/anon)
+* Les ajouter dans un fichier `.env.local` :
 
 ```env
 VITE_SUPABASE_URL=your-project-url
@@ -68,65 +71,45 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 VITE_OPENWEATHER_API_KEY=your-weather-api-key
 ```
 
-### 4️⃣ Run Development Server
+### 4️⃣ Lancer le serveur de développement
 
 ```bash
 npm run dev
 ```
 
-Your project should now run on **[http://localhost:5173/](http://localhost:5173/)** 🎉
+Le projet sera accessible sur : **[http://localhost:5173/](http://localhost:5173/)** 🎉
 
 ---
 
-## 🌍 Impact & Benefits
+## 🌍 Impact et avantages
 
-* 📈 Boosts **farm productivity** and profitability.
-* 🌱 Encourages **sustainable farming practices**.
-* 🔔 Reduces risks from **weather and market volatility**.
-* 🤝 Makes advanced AI accessible to farmers with **local language + voice support**.
-
----
-
-## 📊 Feasibility & Challenges
-
-* **Feasibility**: Easy to scale using Supabase (serverless + hosted PostgreSQL).
-* **Challenges**: Internet connectivity, farmer tech adoption.
-* **Strategies**: Offline-first design, multilingual support, community training.
+* 📈 Augmente la **productivité agricole** et les revenus
+* 🌱 Favorise des **pratiques agricoles durables**
+* 🔔 Réduit les risques liés à la **météo et au marché**
+* 🤝 Rend l’IA accessible aux agriculteurs grâce au **support vocal et multilingue**
 
 ---
 
-## 📚 References
+## 📊 Faisabilité et défis
 
-* [Supabase Docs](https://supabase.com/docs)
-* [OpenWeather API](https://openweathermap.org/api)
-* [SoilGrids Data](https://soilgrids.org)
-* [e-NAM (National Agriculture Market)](https://enam.gov.in/)
-* [Agmarknet](https://agmarknet.gov.in/)
+* **Faisabilité** : Facilement scalable avec Supabase (serverless + PostgreSQL hébergé)
+* **Défis** : Connectivité Internet, adoption technologique par les agriculteurs
+* **Stratégies** : Approche offline-first, support multilingue, formation communautaire
 
 ---
 
-## 👨‍💻 Team
+## 📚 Références
 
-* Team Name: **AgriVision AI** 🌾
-* Members: \[Add your team members here]
-
----
-
-## 📢 Vision
-
-*"Empowering every farmer with AI-driven insights to grow better, earn more, and farm sustainably."*
-
-```
+* Documentation Supabase
+* API OpenWeather
+* Données SoilGrids
+* e-NAM (Marché Agricole National)
+* Agmarknet
 
 ---
 
-⚡This is a **full GitHub-ready README.md** with:  
-- Project description  
-- Features  
-- Tech stack  
-- Setup & installation guide  
-- Impact & benefits  
-- References & Vision  
+## 👨‍💻 Équipe
 
-Do you want me to also create a **project folder structure** suggestion (like `src/components/`, `supabase/`, `api/`) so your repo looks professional?
-```
+* Nom de l’équipe : **Composte AI** 🌾
+
+Si tu veux, je peux aussi te proposer une **structure de dossier professionnelle pour ce projet (frontend + backend + IA)** 👍
